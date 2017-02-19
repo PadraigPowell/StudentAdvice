@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "195271716712",
+    "firebase_url": "https://student-advice.firebaseio.com",
+    "project_id": "student-advice",
+    "storage_bucket": "student-advice.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:195271716712:android:8acd64bd479ec831",
+        "android_client_info": {
+          "package_name": "project.year.afinal.studentadvice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "195271716712-3hh0ekgcsdfui01p1r9bscru1l6mo46c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "project.year.afinal.studentadvice",
+            "certificate_hash": "4F6CD7D87F109F5A5368DE00DF48EE04D72087D8"
+          }
+        },
+        {
+          "client_id": "195271716712-1terc4jjivoqjhn2g6serbfhb5i6892k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKpK_OuN45c3pwqkir2Fnbj5LXJNr9OgA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "195271716712-1terc4jjivoqjhn2g6serbfhb5i6892k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

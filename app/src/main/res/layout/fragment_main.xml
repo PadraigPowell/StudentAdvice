@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="project.year.afinal.studentadvice.MainFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginLeft="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="58dp"
+        android:layout_marginStart="63dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:text="Main"
+        android:layout_width="134dp"
+        android:layout_height="64dp"
+        android:id="@+id/buttonMain"
+        android:layout_marginStart="33dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/right"
+        android:layout_marginBottom="13dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:layout_marginTop="78dp"
+        android:id="@+id/editText"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/right" />
+</RelativeLayout>
