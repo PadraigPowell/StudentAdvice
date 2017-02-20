@@ -1,8 +1,10 @@
 package project.year.afinal.studentadvice;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ public class Login extends Fragment implements View.OnClickListener{
     private EditText editTextEmail;
     private EditText editTextPassword;
 
+    ProgressDialog progressDialog;
 
     public Login() {
         // Required empty public constructor
@@ -30,6 +33,7 @@ public class Login extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        progressDialog = new ProgressDialog(getActivity());
 
         buttonLogin = (Button) getView().findViewById(R.id.buttonLogin);
         textViewSignup = (TextView) getView().findViewById(R.id.textViewSignup);
@@ -43,9 +47,21 @@ public class Login extends Fragment implements View.OnClickListener{
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
+    private void loginUser(){
+        String email = editTextEmail.getText().toString().trim();
+        String password = editTextPassword.getText().toString().trim();
+
+        if (TextUtils.isEmpty(email)){
+            //kj
+        }
+        if (TextUtils.isEmpty(password)){
+            //hj
+        }
+    }
+
     public void onClick(View view){
         if(view == buttonLogin){
-           // loginUser();
+           loginUser();
         }
 
         if(view == textViewSignup){
