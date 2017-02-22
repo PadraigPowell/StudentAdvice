@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,46 +6,64 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
+    android:fitsSystemWindows="true"
     tools:context="project.year.afinal.studentadvice.Login">
 
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
-        android:layout_centerHorizontal="true"
+        android:paddingTop="56dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:inputType="textEmailAddress"
-            android:id="@+id/editTextEmail"
+        <!--
+             -->
+
+        <!-- Email Label -->
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter Username/Email"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/input_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:hint="Email" />
+        </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:inputType="textPassword"
-            android:id="@+id/editTextPassword"
+        <!-- Password Label -->
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:hint="Password"/>
+        </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="15dp"
+        <!-- Login Button Label -->
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/buttonLogin"
-            android:text="Login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:padding="12dp"
+            android:text="Login"/>
 
-        <TextView
-            android:layout_margin="15dp"
-            android:layout_gravity="center_horizontal|bottom"
-            android:id="@+id/textViewSignup"
-            android:text="Dont have an account yet? Signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+        <TextView android:id="@+id/textViewSignup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="No account yet? Create one"
+            android:gravity="center"
+            android:textSize="16dip"/>
    </LinearLayout>
-
-</RelativeLayout>
+</ScrollView>
