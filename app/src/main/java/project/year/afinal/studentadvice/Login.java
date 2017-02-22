@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 
 
 /**
@@ -81,7 +83,6 @@ public class Login extends Fragment implements View.OnClickListener{
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
-            //fragmentTransaction.addToBackStack("Signup");
             fragmentTransaction.commit();
         }
     }
