@@ -83,7 +83,7 @@ public class Signup extends Fragment implements View.OnClickListener {
         progressDialog.setMessage("Registering User...");
         progressDialog.show();
 
-        /*
+
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -97,7 +97,7 @@ public class Signup extends Fragment implements View.OnClickListener {
                         }
                     }
                 });
-        */
+
 
         MainFragment fragment = new MainFragment();
         FragmentManager fragmentManager = getFragmentManager();
