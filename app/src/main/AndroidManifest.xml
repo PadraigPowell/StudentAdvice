@@ -62,6 +62,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="project.year.afinal.studentadvice.MainActivity" />
         </activity>
+        <activity
+            android:name=".SignupActivity"
+            android:label="@string/title_activity_signup"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="project.year.afinal.studentadvice.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
