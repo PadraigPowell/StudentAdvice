@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,10 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
     private Button buttonSignup;
     private TextView textViewLogin;
+    private EditText editTextFirstName;
+    private EditText editTextLastName;
+    private EditText editFirstTextName;
+    private DatePicker date_pickerDOB;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private EditText editRetypeTextPassword;
@@ -42,17 +47,20 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         firebaseAuth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
 
-        buttonSignup = (Button) findViewById(R.id.buttonSignup);
-        textViewLogin = (TextView) findViewById(R.id.textViewLogin);
+        editFirstTextName = (EditText) findViewById(R.id.editTextFirstName);
+        editTextLastName = (EditText) findViewById(R.id.editTextLastName);
+        date_pickerDOB = (DatePicker) findViewById(R.id.date_pickerDOB);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editRetypeTextPassword = (EditText) findViewById(R.id.editRetypeTextPassword);
+        buttonSignup = (Button) findViewById(R.id.buttonSignup);
+        textViewLogin = (TextView) findViewById(R.id.textViewLogin);
 
-
-        buttonSignup.setOnClickListener(SignupActivity);
-        textViewLogin.setOnClickListener(this);
+        buttonSignup.setOnClickListener(SignupActivity.this);
+        textViewLogin.setOnClickListener(SignupActivity.this);
     }
 
-    private void signupUser() {
+    private void textSignup() {
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String rePassword = editRetypeTextPassword.getText().toString().trim();
@@ -67,23 +75,27 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             //Stopping the function executing
             return;
         }
+    }
 
-    public void onClick(View view){
-        if(view == buttonSignup){
-            //signUpUser();
+    public void onClick(View view) {
+        if (view == buttonSignup) {
+            //set data entered // TODO: 10/03/2017
+            createUser();
         }
 
-        if(view == textViewLogin){
+        if (view == textViewLogin) {
             //open Signup fragment
             Intent myIntent = new Intent(SignupActivity.this, LoginActivity.class);
             SignupActivity.this.startActivity(myIntent);
         }
-    }
 
         //if validation is OK
         //Display progress dialog
         progressDialog.setMessage("Registering User...");
         progressDialog.show();
+    }
+
+    private void createUser(){
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -98,5 +110,4 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                     }
                 });
     }
-
 }
