@@ -7,17 +7,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.app.ProgressDialog;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextEmail;
     private EditText editTextPassword;
     private User user;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -92,6 +87,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        if (mUser != null) {
+            // User is signed in
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            String uid = mAuth.getCurrentUser().getUid();
+            intent.putExtra("user_id", uid);
+            startActivity(intent);
+            finish();
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
+        }
 
         callbackManager = CallbackManager.Factory.create();
         facebookLogin = (LoginButton) findViewById(R.id.facebookLogin);
@@ -123,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    user.
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -134,15 +140,73 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         textViewSignup.setOnClickListener(this);
     }
 
-    /*This method sets up a new User by fetching the user entered details.
+    private void signInWithFacebook(AccessToken token) {
+        Log.d(TAG, "signInWithFacebook:" + token);
+
+        showProgressDialog();
+
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            String uid=task.getResult().getUser().getUid();
+                            String name=task.getResult().getUser().getDisplayName();
+                            String email=task.getResult().getUser().getEmail();
+                            String image=task.getResult().getUser().getPhotoUrl().toString();
+
+                            //Create a new User and Save it in Firebase database
+                            User user = new User(uid,name,null,email,null);
+
+                            mRef.child(uid).setValue(user);
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra("user_id",uid);
+                            intent.putExtra("profile_picture",image);
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        hideProgressDialog();
+                    }
+                });
+    }
+
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
+        }
+
+        mProgressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    //This method sets up a new User by fetching the user entered details.
     protected void setUpUser() {
         user = new User();
-        user.setName(name.getText().toString());
-        user.setPhoneNumber(phoneNumber.getText().toString());
+        user.setFName(fName.getText().toString());
+        user.setLName(lName.getText().toString());
         user.setEmail(email.getText().toString());
         user.setPassword(password.getText().toString());
     }
-    */
 
     public void onClick(View view){
         if(view == buttonLogin){

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -29,13 +30,16 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
     NavigationView navigationView = null;
     Toolbar toolbar = null;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
+    private static final String TAG = "AndroidBash";
+    private Firebase myFirebaseRef;
+    private FirebaseAuth mAuth;
+    // To hold Facebook profile picture
+    private ImageView profilePicture;
+
+
     private GoogleApiClient client;
 
     @Override

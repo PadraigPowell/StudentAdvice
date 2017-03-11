@@ -1,5 +1,7 @@
 package project.year.afinal.studentadvice;
 
+import java.util.Date;
+
 /**
  * Created by Lorcan on 08/03/2017.
  */
@@ -8,20 +10,26 @@ public class User {
 
     private String id;
     private String name;
-    private String phoneNumber;
+    private int DOBYear;
+    private int DOBMonth;
+    private int DOBDay;
     private String email;
     private String password;
+    private Boolean isUserloggedIn;
 
 
     public User() {
     }
 
-    public User(String id, String name, String phoneNumber, String email, String password) {
+    public User(String id, String name, int DOBYear, int DOBMonth, int DOBDay, String email, String password) {
         this.id = id;
         this.name = name;
-        this.phoneNumber = phoneNumber;
+        this.DOBYear = DOBYear;
+        this.DOBMonth = DOBMonth;
+        this.DOBDay = DOBDay;
         this.email = email;
         this.password = password;
+        this.isUserloggedIn = true;
     }
 
     public String getId() {
@@ -40,15 +48,21 @@ public class User {
         this.name = name;
     }
 
-
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public void setDOB(int DOBYear, int DOBMonth, int DOBDay) {
+        this.DOBYear = DOBYear;
+        this.DOBMonth = DOBMonth;
+        this.DOBDay = DOBDay;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public String getDOB() {
+        StringBuilder DOB = new StringBuilder();
+        DOB.append(DOBYear);
+        DOB.append(":");
+        DOB.append(DOBMonth);
+        DOB.append(":");
+        DOB.append(DOBDay);
+        return DOB.toString();
     }
-
 
     public String getEmail() {
         return email;
@@ -66,4 +80,5 @@ public class User {
         this.password = password;
     }
 
+    public Boolean getIsUserloggedIn(){ return isUserloggedIn;}
 }
