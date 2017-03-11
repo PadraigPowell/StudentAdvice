@@ -90,7 +90,8 @@ tools:context="project.year.afinal.studentadvice.SignupActivity">
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
         android:padding="12dp"
-        android:text="Create Account"/>
+        android:text="Create Account"
+        android:onClick="onSignupClicked"/>
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/facebookLogin"
@@ -98,7 +99,8 @@ tools:context="project.year.afinal.studentadvice.SignupActivity">
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="30dp"
+        android:onClick="facebookSignupClicked"/>
 
     <TextView android:id="@+id/textViewLogin"
         android:layout_width="fill_parent"

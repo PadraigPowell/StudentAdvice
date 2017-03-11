@@ -22,6 +22,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.firebase.client.Firebase;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import android.util.Log;
+
 public class SignupActivity extends AppCompatActivity {
 
     private Button buttonSignup;
@@ -65,6 +69,16 @@ public class SignupActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    public void onSignupClicked(View view){
+        if (isTextValidateForSignup()){
+            //login
+        }
+    }
+
+    public void facebookSignupClicked(View view){
+        //get facebook data on success
+    }
+
     protected void setUpUser(){
         user = new User();
         user.setName(editTextName.getText().toString());
@@ -75,27 +89,61 @@ public class SignupActivity extends AppCompatActivity {
                 date_pickerDOB.getDayOfMonth());
     }
 
-    private void textSignup() {
+    private Boolean isTextValidateForSignup() {
         String name = editTextName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
         String rePassword = editRetypeTextPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Please enter Email/Username", Toast.LENGTH_SHORT).show();
-            //Stopping the function executing
-            return;
+        Boolean error = false;
+
+        /*
+        Regex ensures the name is just letters, spaces and some special characters
+        such as O'néil and
+         */
+        String regexName = "^[\\p{L} .'-]+$";
+
+        //Email validation to ensure email is input correctly
+        String regexEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";;
+
+        //Validate name
+        if (TextUtils.isEmpty(name)) {
+            editTextName.setError("Required.");
+            error = true;
+        }else if(!isRegexValid(name, regexName)){
+            editTextName.setError("Invalid Name");
+            error = true;
         }
+
+        //validate email
+        if (TextUtils.isEmpty(email)) {
+            editTextEmail.setError("Required.");
+            error = true;
+        }else if (!isRegexValid(email, regexEmail)){
+            editTextEmail.setError("Invalid Email.");
+            error = true;
+        }
+
+        //Validate Password
         if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please enter Password", Toast.LENGTH_SHORT).show();
-            //Stopping the function executing
-            return;
+            editTextEmail.setError("Required.");
+            error = true;
         }
         if (TextUtils.isEmpty(rePassword)) {
-            Toast.makeText(this, "Please Re-Enter Password", Toast.LENGTH_SHORT).show();
-            //Stopping the function executing
-            return;
+            editRetypeTextPassword.setError("Required.");
+            error = true;
         }
+
+        return error;
+    }
+
+    private Boolean isRegexValid(String check, String Regex){
+        Pattern pattern = Pattern.compile(Regex);
+        Matcher matcher = pattern.matcher(check);
+        Log.d("isRegexValid(" + check.toString() + Regex.toString() + ")",
+                "Regex result = " + matcher.matches());
+        return matcher.matches();
     }
 
     public void onClick(View view) {
