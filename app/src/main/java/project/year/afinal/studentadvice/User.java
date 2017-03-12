@@ -7,29 +7,22 @@ import java.util.Date;
  */
 
 public class User {
-
     private String id;
     private String name;
-    private int DOBYear;
-    private int DOBMonth;
-    private int DOBDay;
+    private String DOB;
     private String email;
     private String password;
-    private Boolean isUserloggedIn;
 
 
     public User() {
     }
 
-    public User(String id, String name, int DOBYear, int DOBMonth, int DOBDay, String email, String password) {
+    public User(String id, String name, String email, String DOB, String password) {
         this.id = id;
         this.name = name;
-        this.DOBYear = DOBYear;
-        this.DOBMonth = DOBMonth;
-        this.DOBDay = DOBDay;
+        this.DOB = DOB;
         this.email = email;
         this.password = password;
-        this.isUserloggedIn = true;
     }
 
     public String getId() {
@@ -48,21 +41,9 @@ public class User {
         this.name = name;
     }
 
-    public void setDOB(int DOBYear, int DOBMonth, int DOBDay) {
-        this.DOBYear = DOBYear;
-        this.DOBMonth = DOBMonth;
-        this.DOBDay = DOBDay;
-    }
+    public void setDOB(String DOB) {this.DOB = DOB;}
 
-    public String getDOB() {
-        StringBuilder DOB = new StringBuilder();
-        DOB.append(DOBYear);
-        DOB.append(":");
-        DOB.append(DOBMonth);
-        DOB.append(":");
-        DOB.append(DOBDay);
-        return DOB.toString();
-    }
+    public String getDOB() {return DOB;}
 
     public String getEmail() {
         return email;
@@ -80,5 +61,4 @@ public class User {
         this.password = password;
     }
 
-    public Boolean getIsUserloggedIn(){ return isUserloggedIn;}
 }

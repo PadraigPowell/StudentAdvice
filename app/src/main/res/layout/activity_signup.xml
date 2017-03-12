@@ -16,6 +16,16 @@ tools:context="project.year.afinal.studentadvice.SignupActivity">
     android:paddingRight="24dp">
 
     <!--  Name Label -->
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="10dp"
+        android:textSize="40dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Create Account"/>
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,12 +47,6 @@ tools:context="project.year.afinal.studentadvice.SignupActivity">
         android:gravity="left"
         android:textSize="21dp"/>
 
-    <DatePicker
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/date_pickerDOB"
-        android:calendarViewShown="false" />
-
     <!-- Email Label -->
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -55,6 +59,25 @@ tools:context="project.year.afinal.studentadvice.SignupActivity">
             android:inputType="textEmailAddress"
             android:hint="Email" />
     </android.support.design.widget.TextInputLayout>
+
+    <!-- University Label -->
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/editTextUni"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:hint="University" />
+    </android.support.design.widget.TextInputLayout>
+
+    <DatePicker
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/date_pickerDOB"
+        android:calendarViewShown="false" />
 
     <!-- Password Label -->
     <android.support.design.widget.TextInputLayout
@@ -93,21 +116,13 @@ tools:context="project.year.afinal.studentadvice.SignupActivity">
         android:text="Create Account"
         android:onClick="onSignupClicked"/>
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/facebookLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="30dp"
-        android:onClick="facebookSignupClicked"/>
-
     <TextView android:id="@+id/textViewLogin"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:text="Already a member? Login"
         android:gravity="center"
-        android:textSize="16dp"/>
+        android:textSize="16dp"
+        android:onClick="openLoginClicked"/>
 </LinearLayout>
 </ScrollView>
