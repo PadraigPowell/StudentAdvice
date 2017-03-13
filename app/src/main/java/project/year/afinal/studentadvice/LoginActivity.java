@@ -73,28 +73,46 @@ public class LoginActivity extends AppCompatActivity{
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             // User is signed in
-            String uid = mAuth.getCurrentUser().getUid();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            String uid = mAuth.getCurrentUser().getUid();
+            String image=mAuth.getCurrentUser().getPhotoUrl().toString();
             intent.putExtra("user_id", uid);
+            if(image!=null || image!=""){
+                intent.putExtra("profile_picture",image);
+            }
             startActivity(intent);
             finish();
             Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
         }
 
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser mUser = firebaseAuth.getCurrentUser();
+                if (mUser != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+
+            }
+        };
+
+        //Facebook
         callbackManager = CallbackManager.Factory.create();
         facebookLogin = (LoginButton) findViewById(R.id.facebookLogin);
         facebookLogin.setReadPermissions("email", "public_profile");
         facebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
+                signInWithFacebook(loginResult.getAccessToken());
             }
 
             @Override
-            public void onCancel()
-            {
+            public void onCancel(){
                 Log.d(TAG, "facebook:onCancel:");
             }
 
@@ -103,20 +121,6 @@ public class LoginActivity extends AppCompatActivity{
                 Log.d(TAG, "facebook:onError:" + error);
             }
         });
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
     }
 
     @Override
@@ -130,45 +134,19 @@ public class LoginActivity extends AppCompatActivity{
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
     }
 
-    private void signInWithFacebook(AccessToken token) {
-        Log.d(TAG, "signInWithFacebook:" + token);
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
 
-        showProgressDialog();
-
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }else{
-                            String uid=task.getResult().getUser().getUid();
-                            String name=task.getResult().getUser().getDisplayName();
-                            String email=task.getResult().getUser().getEmail();
-                            String image=task.getResult().getUser().getPhotoUrl().toString();
-
-                            //Create a new User and Save it in Firebase database
-                            User user = new User(uid,name,null,email,null);
-
-                            mRef.child(uid).setValue(user);
-
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("user_id",uid);
-                            intent.putExtra("profile_picture",image);
-                            startActivity(intent);
-                            finish();
-                        }
-                        hideProgressDialog();
-                    }
-                });
+    //FaceBook
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     //This method sets up a new User by fetching the user entered details.
@@ -178,34 +156,15 @@ public class LoginActivity extends AppCompatActivity{
         user.setPassword(editTextPassword.getText().toString());
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Pass the activity result back to the Facebook SDK
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+    public void onSignUpClicked(View view) {
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
-
-        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+    public void onLoginClicked(View view) {
+        setUpUser();
+        login(editTextEmail.getText().toString().trim(),
+                editTextPassword.getText().toString().trim());
     }
 
     private void login(String email, String password) {
@@ -213,9 +172,7 @@ public class LoginActivity extends AppCompatActivity{
         if (!isTextValidateForLogin()) {
             return;
         }
-
         showProgressDialog();
-
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -236,7 +193,6 @@ public class LoginActivity extends AppCompatActivity{
                             startActivity(intent);
                             finish();
                         }
-
                         hideProgressDialog();
                     }
                 });
@@ -285,6 +241,47 @@ public class LoginActivity extends AppCompatActivity{
         Log.d(TAG,"isRegexValid(" + check.toString() + Regex.toString()
                 + ") Regex result = " + matcher.matches());
         return matcher.matches();
+    }
+
+    private void signInWithFacebook(AccessToken token) {
+        Log.d(TAG, "signInWithFacebook:" + token);
+
+        showProgressDialog();
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            String uid=task.getResult().getUser().getUid();
+                            String name=task.getResult().getUser().getDisplayName();
+                            String email=task.getResult().getUser().getEmail();
+                            String image=task.getResult().getUser().getPhotoUrl().toString();
+
+                            //Create a new User and Save it in Firebase database
+                            User user = new User(uid,name,email,null,null);
+
+                            mRef.child(uid).setValue(user);
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra("user_id",uid);
+                            intent.putExtra("profile_picture",image);
+                            startActivity(intent);
+                            finish();
+                        }
+                        hideProgressDialog();
+                    }
+                });
     }
 
     public void showProgressDialog() {

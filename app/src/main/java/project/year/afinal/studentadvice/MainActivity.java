@@ -16,17 +16,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,9 +42,12 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "AndroidBash";
     private Firebase myFirebaseRef;
     private FirebaseAuth mAuth;
+
+    //Navigation UI elements
+    private TextView name;
+    private TextView email;
     // To hold Facebook profile picture
     private ImageView profilePicture;
-
 
     private GoogleApiClient client;
 
@@ -47,42 +56,13 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-        MainActivity.this.startActivity(myIntent);
-/*
-        firebase.auth().onAuthStateChanged(function(user) {
-            if (user) {
-                // User is signed in.
-            } else {
-                // No user is signed in.
-            }
-        });
-
-        set fragment init
-        Login fragment = new Login();
-        FragmentTransaction fragmentTransaction =
-                getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
+        //Creates a reference for  your Firebase database
+        myFirebaseRef = new Firebase("https://student-advice.firebaseio.com/");
+        mAuth = FirebaseAuth.getInstance();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -90,6 +70,59 @@ public class MainActivity extends AppCompatActivity
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        name = (TextView) findViewById(R.id.displayName);
+        email = (TextView) findViewById(R.id.displayEmail);
+        profilePicture = (ImageView) findViewById(R.id.profile_picture);
+        //Get the uid for the currently logged in User from intent data passed to this activity
+        String uid = getIntent().getExtras().getString("user_id");
+        //Get the imageUrl  for the currently logged in User from intent data passed to this activity
+        String imageUrl = getIntent().getExtras().getString("profile_picture");
+
+        new ImageLoadTask(imageUrl, profilePicture).execute();
+
+        //Referring to the name of the User who has logged in currently and adding a valueChangeListener
+        myFirebaseRef.child(uid).child("name").addValueEventListener(new ValueEventListener() {
+            //onDataChange is called every time the name of the User changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Inside onDataChange we can get the data as an Object from the dataSnapshot
+                //getValue returns an Object. We can specify the type by passing the type expected as a parameter
+                String data = dataSnapshot.getValue(String.class);
+                name.setText("Hello " + data + ", ");
+            }
+
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //A firebase reference to the welcomeText can be created in following ways :
+        // You can use this :
+        //Firebase myAnotherFirebaseRefForWelcomeText=new Firebase("https://androidbashfirebaseupdat-bd094.firebaseio.com/welcomeText");*/
+        //OR as shown below
+        myFirebaseRef.child("welcomeText").addValueEventListener(new ValueEventListener() {
+            //onDataChange is called every time the data changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Inside onDataChange we can get the data as an Object from the dataSnapshot
+                //getValue returns an Object. We can specify the type by passing the type expected as a parameter
+                String data = dataSnapshot.getValue(String.class);
+                welcomeText.setText(data);
+            }
+
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
