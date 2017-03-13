@@ -18,6 +18,9 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -39,9 +42,7 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView = null;
     Toolbar toolbar = null;
 
-    private static final String TAG = "AndroidBash";
-    private Firebase myFirebaseRef;
-    private FirebaseAuth mAuth;
+    private static final String TAG = "MainActivity";
 
     //Navigation UI elements
     private TextView name;
@@ -55,10 +56,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Creates a reference for  your Firebase database
-        myFirebaseRef = new Firebase("https://student-advice.firebaseio.com/");
-        mAuth = FirebaseAuth.getInstance();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,52 +74,35 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
         name = (TextView) findViewById(R.id.displayName);
         email = (TextView) findViewById(R.id.displayEmail);
-        profilePicture = (ImageView) findViewById(R.id.profile_picture);
+        profilePicture = (ImageView) findViewById(R.id.profileImage);
+
+        name.setText(getIntent().getExtras().getString("user_name"));
+        email.setText(getIntent().getExtras().getString("user_email"));
+
         //Get the uid for the currently logged in User from intent data passed to this activity
         String uid = getIntent().getExtras().getString("user_id");
+
         //Get the imageUrl  for the currently logged in User from intent data passed to this activity
         String imageUrl = getIntent().getExtras().getString("profile_picture");
 
-        new ImageLoadTask(imageUrl, profilePicture).execute();
+        if (imageUrl != null) {
+            new ImageLoadTask(imageUrl, profilePicture).execute();
+        }
 
-        //Referring to the name of the User who has logged in currently and adding a valueChangeListener
-        myFirebaseRef.child(uid).child("name").addValueEventListener(new ValueEventListener() {
-            //onDataChange is called every time the name of the User changes in your Firebase Database
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Inside onDataChange we can get the data as an Object from the dataSnapshot
-                //getValue returns an Object. We can specify the type by passing the type expected as a parameter
-                String data = dataSnapshot.getValue(String.class);
-                name.setText("Hello " + data + ", ");
-            }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
 
-            //onCancelled is called in case of any error
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+    @Override
+    public void onStop() {
+        super.onStop();
 
-        //A firebase reference to the welcomeText can be created in following ways :
-        // You can use this :
-        //Firebase myAnotherFirebaseRefForWelcomeText=new Firebase("https://androidbashfirebaseupdat-bd094.firebaseio.com/welcomeText");*/
-        //OR as shown below
-        myFirebaseRef.child("welcomeText").addValueEventListener(new ValueEventListener() {
-            //onDataChange is called every time the data changes in your Firebase Database
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Inside onDataChange we can get the data as an Object from the dataSnapshot
-                //getValue returns an Object. We can specify the type by passing the type expected as a parameter
-                String data = dataSnapshot.getValue(String.class);
-                welcomeText.setText(data);
-            }
-
-            //onCancelled is called in case of any error
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 
     @Override
@@ -149,11 +129,10 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        /*noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }
-
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -185,12 +164,29 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_view_activity) {
+            MyComments fragment = new MyComments();
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_settings) {
+            MyComments fragment = new MyComments();
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_profile) {
+            MyComments fragment = new MyComments();
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
 
+        } else if (id == R.id.nav_logout) {
+            //code to logout user and return to login screen
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -214,23 +210,39 @@ public class MainActivity extends AppCompatActivity
                 .build();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
-    }
+    public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
 
-    @Override
-    public void onStop() {
-        super.onStop();
+        private String url;
+        private ImageView imageView;
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
+        public ImageLoadTask(String url, ImageView imageView) {
+            this.url = url;
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            try {
+                URL urlConnection = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlConnection
+                        .openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                Bitmap myBitmap = BitmapFactory.decodeStream(input);
+                return myBitmap;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            super.onPostExecute(result);
+            imageView.setImageBitmap(result);
+        }
+
     }
 }

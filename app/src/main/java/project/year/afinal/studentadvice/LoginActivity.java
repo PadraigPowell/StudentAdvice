@@ -1,36 +1,22 @@
 package project.year.afinal.studentadvice;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.app.ProgressDialog;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ImageView;
-import com.google.android.gms.tasks.Task;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.Firebase;
-import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -38,6 +24,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import android.widget.TextView;
+import android.widget.ImageView;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -103,7 +93,7 @@ public class LoginActivity extends AppCompatActivity{
         //Facebook
         callbackManager = CallbackManager.Factory.create();
         facebookLogin = (LoginButton) findViewById(R.id.facebookLogin);
-        facebookLogin.setReadPermissions("email", "public_profile");
+        facebookLogin.setReadPermissions("email", "public_profile", "user_birthday");
         facebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -132,6 +122,7 @@ public class LoginActivity extends AppCompatActivity{
         textViewSignup = (TextView) findViewById(R.id.textViewSignup);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
@@ -269,12 +260,14 @@ public class LoginActivity extends AppCompatActivity{
                             String image=task.getResult().getUser().getPhotoUrl().toString();
 
                             //Create a new User and Save it in Firebase database
-                            User user = new User(uid,name,email,null,null);
+                            User user = new User(uid,name,email,null);
 
                             mRef.child(uid).setValue(user);
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("user_id",uid);
+                            intent.putExtra("user_name",name);
+                            intent.putExtra("user_email",email);
                             intent.putExtra("profile_picture",image);
                             startActivity(intent);
                             finish();

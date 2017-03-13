@@ -105,7 +105,7 @@ tools:context="project.year.afinal.studentadvice.SignupActivity">
             android:hint="Re-Enter Password"/>
     </android.support.design.widget.TextInputLayout>
 
-    <!-- Signup Button -->
+    <!-- Signugp Button -->
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/buttonSignup"
         android:layout_width="fill_parent"

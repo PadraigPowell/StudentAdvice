@@ -112,7 +112,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private void onAuthenticationSuccess(FirebaseUser mUser) {
         // Write new user
-        saveNewUser(mUser.getUid(), user.getName(), user.getEmail(), user.getDOB(), user.getPassword());
+        saveNewUser(mUser.getUid(), user.getName(), user.getEmail(), user.getPassword());
         firebaseAuth.signOut();
 
         // Go to LoginActivity
@@ -120,25 +120,17 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    private void saveNewUser(String userId, String name, String email, String DOB, String password) {
-        User user = new User(userId,name,email,DOB,password);
+    private void saveNewUser(String userId, String name, String email, String password) {
+        User user = new User(userId,name,email,password);
         mRef.child("users").child(userId).setValue(user);
     }
 
     protected void setUpUser(){
-        //Set the DOB to be dd/mm/yyyy format
-        StringBuilder DOB = new StringBuilder();
-        DOB.append(date_pickerDOB.getDayOfMonth());
-        DOB.append("/");
-        DOB.append(date_pickerDOB.getMonth());
-        DOB.append("/");
-        DOB.append(date_pickerDOB.getYear());
 
         user = new User();
         user.setName(editTextName.getText().toString());
         user.setEmail(editTextEmail.getText().toString());
         user.setPassword(editTextPassword.getText().toString());
-        user.setDOB(DOB.toString());
     }
 
     private Boolean isTextValidateForSignup() {
