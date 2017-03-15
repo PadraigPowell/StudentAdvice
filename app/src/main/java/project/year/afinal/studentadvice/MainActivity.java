@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,9 +64,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View header = navigationView.inflateHeaderView(R.layout.nav_header_main);
+
+        View header = navigationView.getHeaderView(0);
 
         name = (TextView) header.findViewById(R.id.displayName);
         email = (TextView) header.findViewById(R.id.displayEmail);
@@ -80,7 +83,6 @@ public class MainActivity extends AppCompatActivity
         String imageUrl = intent.getStringExtra("profile_picture");
 
         Log.e(TAG, "onStart:" + uid + nameTmp + emailTmp);
-
 
         name.setText(nameTmp);
         email.setText(emailTmp);
