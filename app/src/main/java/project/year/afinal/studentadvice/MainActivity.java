@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,12 +28,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -43,13 +38,9 @@ public class MainActivity extends AppCompatActivity
     Toolbar toolbar = null;
 
     private static final String TAG = "MainActivity";
-
-    //Navigation UI elements
     private TextView name;
     private TextView email;
-    // To hold Facebook profile picture
     private ImageView profilePicture;
-
     private GoogleApiClient client;
 
     @Override
@@ -72,18 +63,27 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        name = (TextView) findViewById(R.id.displayName);
-        email = (TextView) findViewById(R.id.displayEmail);
-        profilePicture = (ImageView) findViewById(R.id.profileImage);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        View header = navigationView.inflateHeaderView(R.layout.nav_header_main);
 
-        name.setText(getIntent().getExtras().getString("user_name"));
-        email.setText(getIntent().getExtras().getString("user_email"));
+        name = (TextView) header.findViewById(R.id.displayName);
+        email = (TextView) header.findViewById(R.id.displayEmail);
+        profilePicture = (ImageView) header.findViewById(R.id.profileImage);
 
-        //Get the uid for the currently logged in User from intent data passed to this activity
-        String uid = getIntent().getExtras().getString("user_id");
 
-        //Get the imageUrl  for the currently logged in User from intent data passed to this activity
-        String imageUrl = getIntent().getExtras().getString("profile_picture");
+        //Get data passed from the login Activity through extra
+        Intent intent = getIntent();
+        String nameTmp = intent.getStringExtra("user_name");
+        String emailTmp = intent.getStringExtra("user_email");
+        String uid = intent.getStringExtra("user_id");
+        String imageUrl = intent.getStringExtra("profile_picture");
+
+        Log.e(TAG, "onStart:" + uid + nameTmp + emailTmp);
+
+
+        name.setText(nameTmp);
+        email.setText(emailTmp);
 
         if (imageUrl != null) {
             new ImageLoadTask(imageUrl, profilePicture).execute();

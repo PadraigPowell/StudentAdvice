@@ -17,21 +17,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:maxHeight="20dp"
-        android:maxWidth="20dp"/>
+        android:paddingLeft="16dp"
+        android:maxHeight="40dp"
+        android:maxWidth="40dp"/>
 
     <TextView
         android:id="@+id/displayName"
+        android:text="Name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/displayEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="example.com"/>
+        android:text="Email"/>
 
 </LinearLayout>

@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 public class LoginActivity extends AppCompatActivity{
 
     private static final String TAG = "LoginActivity";
-    private Firebase mRef = new Firebase("https://student-advice.firebaseio.com/");
+    private Firebase mRef = new Firebase("https://student-advice.firebaseio.com");
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
     public User user;
@@ -45,9 +45,7 @@ public class LoginActivity extends AppCompatActivity{
     private CallbackManager callbackManager;
 
     // UI references.
-    private LoginButton buttonLogin;
     private LoginButton facebookLogin;
-    private TextView textViewSignup;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private ProgressDialog mProgressDialog;
@@ -58,21 +56,28 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        Log.d(TAG, "Login Activity onCreate");
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
+            Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
             // User is signed in
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             String uid = mAuth.getCurrentUser().getUid();
-            String image=mAuth.getCurrentUser().getPhotoUrl().toString();
+            String name = mAuth.getCurrentUser().getDisplayName();
+            String email = mAuth.getCurrentUser().getEmail();
+
             intent.putExtra("user_id", uid);
+            intent.putExtra("user_name", name);
+            intent.putExtra("user_email", email);
+            String image=mAuth.getCurrentUser().getPhotoUrl().toString();
             if(image!=null || image!=""){
                 intent.putExtra("profile_picture",image);
             }
             startActivity(intent);
             finish();
-            Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
         }
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -86,14 +91,13 @@ public class LoginActivity extends AppCompatActivity{
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-
             }
         };
 
         //Facebook
         callbackManager = CallbackManager.Factory.create();
         facebookLogin = (LoginButton) findViewById(R.id.facebookLogin);
-        facebookLogin.setReadPermissions("email", "public_profile", "user_birthday");
+        facebookLogin.setReadPermissions("email", "public_profile");
         facebookLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -117,9 +121,6 @@ public class LoginActivity extends AppCompatActivity{
     protected void onStart() {
         super.onStart();
         //UI references
-        buttonLogin = (LoginButton) findViewById(R.id.buttonLogin);
-        facebookLogin = (LoginButton) findViewById(R.id.facebookLogin);
-        textViewSignup = (TextView) findViewById(R.id.textViewSignup);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         mAuth.addAuthStateListener(mAuthListener);
@@ -178,9 +179,14 @@ public class LoginActivity extends AppCompatActivity{
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
+                            String uid=task.getResult().getUser().getUid();
+                            String name=task.getResult().getUser().getDisplayName();
+                            String email=task.getResult().getUser().getEmail();
+
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            String uid = mAuth.getCurrentUser().getUid();
-                            intent.putExtra("user_id", uid);
+                            intent.putExtra("user_id",uid);
+                            intent.putExtra("user_name",name);
+                            intent.putExtra("user_email",email);
                             startActivity(intent);
                             finish();
                         }

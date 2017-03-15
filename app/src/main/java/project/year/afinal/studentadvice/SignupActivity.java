@@ -53,7 +53,6 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         editTextName = (EditText) findViewById(R.id.editTextName);
         date_pickerDOB = (DatePicker) findViewById(R.id.date_pickerDOB);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
