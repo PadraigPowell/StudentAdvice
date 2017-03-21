@@ -1,13 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="project.year.afinal.studentadvice.settings">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="project.year.afinal.studentadvice.settings">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+<!-- TODO: Update blank fragment layout -->
 
-</FrameLayout>
+<Button
+    android:text="settings"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/buttonSettings"
+    android:layout_marginBottom="132dp"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true" />
+</RelativeLayout>

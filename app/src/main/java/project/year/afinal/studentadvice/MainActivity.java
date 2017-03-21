@@ -228,21 +228,21 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.commit();
 
         } else if (id == R.id.nav_view_activity) {
-            MyComments fragment = new MyComments();
+            myactivity fragment = new myactivity();
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
 
         } else if (id == R.id.nav_settings) {
-            MyComments fragment = new MyComments();
+            settings fragment = new settings();
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
 
         } else if (id == R.id.nav_profile) {
-            MyComments fragment = new MyComments();
+            profile fragment = new profile();
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
