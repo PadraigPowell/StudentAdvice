@@ -31,7 +31,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity";
     private EditText editTextName;
-    private DatePicker date_pickerDOB;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private EditText editRetypeTextPassword;
@@ -54,7 +53,6 @@ public class SignupActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         editTextName = (EditText) findViewById(R.id.editTextName);
-        date_pickerDOB = (DatePicker) findViewById(R.id.date_pickerDOB);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editRetypeTextPassword = (EditText) findViewById(R.id.editRetypeTextPassword);
@@ -66,6 +64,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void onSignupClicked(View view){
+        Log.e(TAG, "onSignupClicked:");
         if (isTextValidateForSignup()){
             createUser();
             showProgressDialog();
@@ -102,6 +101,7 @@ public class SignupActivity extends AppCompatActivity {
                         if (!task.isSuccessful()) {
                             Toast.makeText(SignupActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "createUserWithEmailAndPassword:failed" + task.toString());
                         } else {
                             onAuthenticationSuccess(task.getResult().getUser());
                         }
@@ -111,7 +111,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private void onAuthenticationSuccess(FirebaseUser mUser) {
         // Write new user
-        saveNewUser(mUser.getUid(), user.getName(), user.getEmail(), user.getPassword());
+        saveNewUser(mUser.getUid(), user.getName(), user.getEmail());
         firebaseAuth.signOut();
 
         // Go to LoginActivity
@@ -119,8 +119,8 @@ public class SignupActivity extends AppCompatActivity {
         finish();
     }
 
-    private void saveNewUser(String userId, String name, String email, String password) {
-        User user = new User(userId,name,email,password);
+    private void saveNewUser(String userId, String name, String email) {
+        User user = new User(userId,name,email,null);
         mRef.child("users").child(userId).setValue(user);
     }
 
@@ -144,12 +144,15 @@ public class SignupActivity extends AppCompatActivity {
         String regexName = "^[\\p{L} .'-]+$";
 
         //Email validation to ensure email is input correctly
-        String regexEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        String regexEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-        //Regex strings to validate password
-        String hasUpperCase = "[A-Z]";
-        String hasLowerCase = "[a-Z]";
+        /*Regex strings to validate password
+        (?=.*[0-9])       # a digit must occur at least once
+        (?=.*[a-z])       # a lower case letter must occur at least once
+        (?=.*[A-Z])       # an upper case letter must occur at least once
+        */
+        //String passVal = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])$";
+        String passVal = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$";
 
         //Validate name
         if (TextUtils.isEmpty(name)) {
@@ -185,9 +188,8 @@ public class SignupActivity extends AppCompatActivity {
         }else if(password.length() > 40){
             editTextPassword.setError("40 character limit");
             isValid = false;
-        }else if (!isRegexValid(password, hasUpperCase, false)
-                && !isRegexValid(password, hasLowerCase, false)){
-            editTextPassword.setError("Requires 1 Upper and Lower Case Character");
+        }else if (!isRegexValid(password, passVal, false)){
+            editTextPassword.setError("Requires 1 Upper, Lower and Number ");
             isValid = false;
         }
 
@@ -196,8 +198,8 @@ public class SignupActivity extends AppCompatActivity {
             editRetypeTextPassword.setError("Required.");
             isValid = false;
         }
-        if(isValid) {
-            if (password != rePassword) {
+        if(isValid == true) {
+            if (!password.equals(rePassword)) {
                 Toast.makeText(SignupActivity.this, "Passwords don't Match",
                         Toast.LENGTH_SHORT).show();
                 editRetypeTextPassword.setError("Password doesn't Match");

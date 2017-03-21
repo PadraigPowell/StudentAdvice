@@ -17,13 +17,19 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.firebase.client.ValueEventListener;
+import com.firebase.client.DataSnapshot;
 import android.widget.TextView;
 import android.widget.ImageView;
 import java.util.regex.Matcher;
@@ -36,10 +42,9 @@ import java.util.regex.Pattern;
 public class LoginActivity extends AppCompatActivity{
 
     private static final String TAG = "LoginActivity";
-    private Firebase mRef = new Firebase("https://student-advice.firebaseio.com");
+    private Firebase mRef;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
-    public User user;
 
     //facebook callback manager
     private CallbackManager callbackManager;
@@ -49,7 +54,6 @@ public class LoginActivity extends AppCompatActivity{
     private EditText editTextEmail;
     private EditText editTextPassword;
     private ProgressDialog mProgressDialog;
-    private ImageView profilePicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +61,14 @@ public class LoginActivity extends AppCompatActivity{
         setContentView(R.layout.activity_login);
 
         Log.d(TAG, "Login Activity onCreate");
+        mRef = new Firebase("https://student-advice.firebaseio.com");
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser != null) {
             Log.d(TAG, "onAuthStateChanged:signed_in:" + mUser.getUid());
+
             // User is signed in
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             String uid = mAuth.getCurrentUser().getUid();
@@ -72,8 +78,8 @@ public class LoginActivity extends AppCompatActivity{
             intent.putExtra("user_id", uid);
             intent.putExtra("user_name", name);
             intent.putExtra("user_email", email);
-            String image=mAuth.getCurrentUser().getPhotoUrl().toString();
-            if(image!=null || image!=""){
+            if(name!=null){
+                String image=mAuth.getCurrentUser().getPhotoUrl().toString();
                 intent.putExtra("profile_picture",image);
             }
             startActivity(intent);
@@ -134,18 +140,11 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
 
-    //FaceBook
+        //FaceBook
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    //This method sets up a new User by fetching the user entered details.
-    protected void setUpUser() {
-        user = new User();
-        user.setEmail(editTextEmail.getText().toString());
-        user.setPassword(editTextPassword.getText().toString());
     }
 
     public void onSignUpClicked(View view) {
@@ -154,7 +153,6 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     public void onLoginClicked(View view) {
-        setUpUser();
         login(editTextEmail.getText().toString().trim(),
                 editTextPassword.getText().toString().trim());
     }
@@ -268,7 +266,7 @@ public class LoginActivity extends AppCompatActivity{
                             //Create a new User and Save it in Firebase database
                             User user = new User(uid,name,email,null);
 
-                            mRef.child(uid).setValue(user);
+                            mRef.child("users").child(uid).setValue(user);
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("user_id",uid);

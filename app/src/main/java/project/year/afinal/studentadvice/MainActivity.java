@@ -33,6 +33,16 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
+import com.firebase.client.Firebase;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     NavigationView navigationView = null;
@@ -44,10 +54,29 @@ public class MainActivity extends AppCompatActivity
     private ImageView profilePicture;
     private GoogleApiClient client;
 
+    private Firebase myFirebaseRef;
+    private FirebaseAuth mAuth;
+
+    public User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myFirebaseRef = new Firebase("https://student-advice.firebaseio.com");
+        mAuth = FirebaseAuth.getInstance();
+
+        //set fragment init
+        MainFragment fragment = new MainFragment();
+        FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -82,14 +111,46 @@ public class MainActivity extends AppCompatActivity
         String uid = intent.getStringExtra("user_id");
         String imageUrl = intent.getStringExtra("profile_picture");
 
-        Log.e(TAG, "onStart:" + uid + nameTmp + emailTmp);
 
-        name.setText(nameTmp);
-        email.setText(emailTmp);
-
-        if (imageUrl != null) {
+        if (imageUrl != null)
+        {
             new ImageLoadTask(imageUrl, profilePicture).execute();
+            name.setText("Hello " + nameTmp);
+        }else {
+            /*Referring to the name of the User who has logged in currently and adding a valueChangeListener
+            myFirebaseRef.child("users").child(uid).child("name").addValueEventListener(new ValueEventListener() {
+                //onDataChange is called every time the name of the User changes in your Firebase Database
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String userName = dataSnapshot.getValue(String.class);
+                    name.setText("Hello " + userName);
+                }
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });*/
+
+            ValueEventListener postListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Get Post object and use the values to update the UI
+                    User usr = dataSnapshot.getValue(User.class);
+                    // [START_EXCLUDE]
+                    name.setText("Hello " + usr.getName());
+                    // [END_EXCLUDE]
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            };
+            myFirebaseRef.child("users").child(uid).addValueEventListener(postListener);
         }
+
+        email.setText(emailTmp);
+        Log.d(TAG, "onStart:" + uid + nameTmp + emailTmp);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -189,6 +250,12 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_logout) {
             //code to logout user and return to login screen
+            mAuth.signOut();
+            LoginManager.getInstance().logOut();
+
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
