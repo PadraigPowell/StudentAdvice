@@ -42,6 +42,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -66,6 +67,11 @@ public class MainActivity extends AppCompatActivity
 
         myFirebaseRef = new Firebase("https://student-advice.firebaseio.com");
         mAuth = FirebaseAuth.getInstance();
+
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        if (mUser == null) {
+
+        }
 
         //set fragment init
         MainFragment fragment = new MainFragment();

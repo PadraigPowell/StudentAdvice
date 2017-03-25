@@ -264,9 +264,16 @@ public class LoginActivity extends AppCompatActivity{
                             String image=task.getResult().getUser().getPhotoUrl().toString();
 
                             //Create a new User and Save it in Firebase database
-                            User user = new User(uid,name,email,null);
+                            User user = new User(name,email);
 
-                            mRef.child("users").child(uid).setValue(user);
+                            mRef.child("users").child(uid).setValue(user, new Firebase.CompletionListener() {
+                                @Override
+                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                                    if (firebaseError != null){
+                                        Log.e(TAG, "Firebase add to db failed" + firebaseError.getMessage());
+                                    }
+                                }
+                            });
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("user_id",uid);

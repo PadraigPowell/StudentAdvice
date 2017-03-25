@@ -23,6 +23,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import android.util.Log;
@@ -120,7 +122,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void saveNewUser(String userId, String name, String email) {
-        User user = new User(userId,name,email,null);
+        User user = new User(name,email);
         mRef.child("users").child(userId).setValue(user);
     }
 
@@ -129,7 +131,6 @@ public class SignupActivity extends AppCompatActivity {
         user = new User();
         user.setName(editTextName.getText().toString());
         user.setEmail(editTextEmail.getText().toString());
-        user.setPassword(editTextPassword.getText().toString());
     }
 
     private Boolean isTextValidateForSignup() {
