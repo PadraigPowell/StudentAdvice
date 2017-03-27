@@ -55,6 +55,9 @@ public class LoginActivity extends AppCompatActivity{
     private EditText editTextPassword;
     private ProgressDialog mProgressDialog;
 
+    //make this public so it can be passed in as an intent to the main activity
+    public String nameGlobal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,6 +185,9 @@ public class LoginActivity extends AppCompatActivity{
                             String email=task.getResult().getUser().getEmail();
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
+                            name = getName(uid, name);
+
                             intent.putExtra("user_id",uid);
                             intent.putExtra("user_name",name);
                             intent.putExtra("user_email",email);
@@ -191,6 +197,28 @@ public class LoginActivity extends AppCompatActivity{
                         hideProgressDialog();
                     }
                 });
+    }
+
+    private String getName(String uid, String name)
+    {
+        if(name == null)
+            //global var so name can be passed as intent
+            mRef.child("users").child(uid).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+                //onDataChange is called every time the name of the User changes in your Firebase Database
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String userName = dataSnapshot.getValue(String.class);
+                    nameGlobal = userName;
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            name = nameGlobal;
+        return name;
     }
 
     private Boolean isTextValidateForLogin() {

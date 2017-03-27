@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -55,9 +57,8 @@ public class MainActivity extends AppCompatActivity
     private ImageView profilePicture;
     private GoogleApiClient client;
 
-    private Firebase myFirebaseRef;
-    private FirebaseAuth mAuth;
-
+    public Firebase myFirebaseRef;
+    public FirebaseAuth mAuth;
     public User user;
 
     @Override
@@ -70,13 +71,12 @@ public class MainActivity extends AppCompatActivity
 
         FirebaseUser mUser = mAuth.getCurrentUser();
         if (mUser == null) {
-
+            Log.e(TAG, "mUser is null");
         }
 
         //set fragment init
         MainFragment fragment = new MainFragment();
-        FragmentTransaction fragmentTransaction =
-                getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
 
@@ -116,20 +116,21 @@ public class MainActivity extends AppCompatActivity
         String emailTmp = intent.getStringExtra("user_email");
         String uid = intent.getStringExtra("user_id");
         String imageUrl = intent.getStringExtra("profile_picture");
-
+        name.setText(nameTmp);
+        email.setText(emailTmp);
 
         if (imageUrl != null)
         {
             new ImageLoadTask(imageUrl, profilePicture).execute();
-            name.setText("Hello " + nameTmp);
-        }else {
+        }
+        else {
             //Referring to the name of the User who has logged in currently and adding a valueChangeListener
             myFirebaseRef.child("users").child(uid).child("name").addValueEventListener(new ValueEventListener() {
                 //onDataChange is called every time the name of the User changes in your Firebase Database
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String userName = dataSnapshot.getValue(String.class);
-                    name.setText("Hello " + userName);
+                    name.setText(userName);
                 }
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
@@ -138,7 +139,6 @@ public class MainActivity extends AppCompatActivity
             });
         }
 
-        email.setText(emailTmp);
         Log.d(TAG, "onStart:" + uid + nameTmp + emailTmp);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
         } else if (id == R.id.nav_post_advice) {
-            // Handle the post advice
+            // Handle the Post advice
             PostAdvice fragment = new PostAdvice();
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
@@ -268,7 +268,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
     }
 
-
     public class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
 
         private String url;
@@ -301,6 +300,5 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(result);
             imageView.setImageBitmap(result);
         }
-
     }
 }

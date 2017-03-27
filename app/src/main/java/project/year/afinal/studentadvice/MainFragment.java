@@ -22,7 +22,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Student Advice");
 
 
 
