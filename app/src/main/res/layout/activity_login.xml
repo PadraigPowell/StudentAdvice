@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:fitsSystemWindows="true"
-    tools:context="project.year.afinal.studentadvice.Login">
+    tools:context="project.year.afinal.studentadvice.LoginActivity">
 
     <LinearLayout
         android:paddingTop="56dp"
@@ -13,6 +13,18 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <!--  Page header -->
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="25dp"
+            android:textSize="40dp"
+            android:textAlignment="center"
+            android:fontFamily="sans-serif-medium"
+            android:text="Login"/>
 
         <!-- Email Label -->
         <android.support.design.widget.TextInputLayout
@@ -68,4 +80,4 @@
             android:textSize="16dip"
             android:onClick="onSignUpClicked"/>
     </LinearLayout>
-</RelativeLayout>
+</ScrollView>

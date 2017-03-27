@@ -266,7 +266,8 @@ public class LoginActivity extends AppCompatActivity{
                             //Create a new User and Save it in Firebase database
                             User user = new User(name,email);
 
-                            mRef.child("users").child(uid).setValue(user, new Firebase.CompletionListener() {
+                            Firebase userRef = mRef.child("users/" + uid);
+                            userRef.setValue(user, new Firebase.CompletionListener() {
                                 @Override
                                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                                     if (firebaseError != null){

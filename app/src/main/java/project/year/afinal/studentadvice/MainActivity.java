@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity
             new ImageLoadTask(imageUrl, profilePicture).execute();
             name.setText("Hello " + nameTmp);
         }else {
-            /*Referring to the name of the User who has logged in currently and adding a valueChangeListener
+            //Referring to the name of the User who has logged in currently and adding a valueChangeListener
             myFirebaseRef.child("users").child(uid).child("name").addValueEventListener(new ValueEventListener() {
                 //onDataChange is called every time the name of the User changes in your Firebase Database
                 @Override
@@ -135,24 +135,7 @@ public class MainActivity extends AppCompatActivity
                 public void onCancelled(FirebaseError firebaseError) {
                     Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
                 }
-            });*/
-
-            ValueEventListener postListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Get Post object and use the values to update the UI
-                    User usr = dataSnapshot.getValue(User.class);
-                    // [START_EXCLUDE]
-                    name.setText("Hello " + usr.getName());
-                    // [END_EXCLUDE]
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            };
-            myFirebaseRef.child("users").child(uid).addValueEventListener(postListener);
+            });
         }
 
         email.setText(emailTmp);

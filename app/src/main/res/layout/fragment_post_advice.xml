@@ -4,13 +4,60 @@
     android:layout_height="match_parent"
     tools:context="project.year.afinal.studentadvice.PostAdvice">
 
+    <!-- <EditText
+        android:inputType="textMultiLine"
+        android:lines="8"
+        android:minLines="6"
+        android:gravity="top|left"
+        android:maxLines="10"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:scrollbars="horizontal"
+        android:layout_marginLeft="10px"
+        android:layout_marginRight="10px"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:id="@+id/et"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Multiline EditText by XML layout"
+        android:fontFamily="sans-serif-condensed"
+        android:background="#d3d7b6"
+        android:minLines="2"
+        android:maxLines="3"
+        android:scrollbars="vertical"
+        android:inputType="textMultiLine"
+        />
+        -->
+
+
+    <EditText
+        android:id="@+id/et2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:fontFamily="sans-serif-condensed"
+        android:hint="Multiline EditText programmatically"
+        android:background="#d4d7a5"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+
 
     <Button
         android:text="Post Advice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/buttonPostAdvice"
-        android:layout_marginBottom="156dp"
+        android:layout_marginBottom="28dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
