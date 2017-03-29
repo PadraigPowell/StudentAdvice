@@ -5,6 +5,7 @@
     tools:context="project.year.afinal.studentadvice.PostAdvice">
 
     <LinearLayout
+        android:id="@+id/postLayout"
         android:paddingTop="10dp"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
@@ -20,19 +21,21 @@
             android:layout_marginTop="70dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="#d3d3d3"
-            android:inputType="text"
-            android:hint="@string/postHeaderHint"/>
+            android:fontFamily="sans-serif-condensed"
+            android:inputType="textCapSentences"
+            android:hint="@string/postHeaderHint"
+            android:background="#d3d3d3"/>
 
         <EditText
             android:id="@+id/editText_Advice"
             android:layout_width="match_parent"
             android:layout_height="250dp"
+            android:scrollHorizontally="false"
+            android:lines="15"
+            android:padding="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:padding="10dp"
-            android:inputType="textImeMultiLine"
             android:fontFamily="sans-serif-condensed"
             android:hint="@string/postHint"
             android:background="#d3d3d3"
@@ -40,13 +43,22 @@
 
 
         <Button
-            android:text="Post Advice"
+            android:text="@string/postAdvice"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/buttonPostAdvice"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="28dp"
-            android:onClick="onClickPostAdvice"/>
+            android:drawableRight="@android:drawable/ic_menu_send"/>
+
+
+        <TextView
+            android:id="@+id/Text_Success"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/postAdviceSuccess"
+            android:textColor="@color/colorPrimaryDark"
+            android:gravity="center_horizontal"
+            android:visibility="invisible"
+            android:textSize="30sp"/>
     </LinearLayout>
 </ScrollView>

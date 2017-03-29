@@ -125,6 +125,7 @@ public class SignupActivity extends AppCompatActivity {
     private void saveNewUser(String userId, String name, String email) {
         User user = new User(name,email);
         mRef.child("users").child(userId).setValue(user);
+        Log.e(TAG, "User added to db uid =  " + userId);
     }
 
     protected void setUpUser(){
@@ -161,7 +162,7 @@ public class SignupActivity extends AppCompatActivity {
             editTextName.setError("Required.");
             isValid = false;
         }else if(name.length() > 40){
-            editTextName.setError("40 Character limit.");
+            editTextName.setError("40 Character limit:" + name.length());
             isValid = false;
         }else if(!isRegexValid(name, regexName, true)) {
             editTextName.setError("Invalid Name");
@@ -173,10 +174,10 @@ public class SignupActivity extends AppCompatActivity {
             editTextEmail.setError("Required.");
             isValid = false;
         }else if (email.length() > 40){
-            editTextEmail.setError("40 character limit");
+            editTextEmail.setError("40 character limit:" + email.length());
             isValid = false;
         }else if (!isRegexValid(email, regexEmail, true)){
-            editTextEmail.setError("Invalid Email.");
+            editTextEmail.setError("Invalid Email");
             isValid = false;
         }
 
@@ -185,10 +186,10 @@ public class SignupActivity extends AppCompatActivity {
             editTextPassword.setError("Required.");
             isValid = false;
         }else if (password.length() < 6){
-            editTextPassword.setError("6 or more characters.");
+            editTextPassword.setError("6 or more characters:" + password.length());
             isValid = false;
         }else if(password.length() > 40){
-            editTextPassword.setError("40 character limit");
+            editTextPassword.setError("40 character limit:" + password.length());
             isValid = false;
         }else if (!isRegexValid(password, passVal, false)){
             editTextPassword.setError("Requires 1 Upper, Lower and Number ");

@@ -6,4 +6,5 @@
     <color name="centerColor">#ff303f9f</color>
     <color name="endColor">#ff283593</color>
     <color name="startColor">#ff3367d6</color>
+    <color name="darkText">#000000</color>
 </resources>

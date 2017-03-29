@@ -78,13 +78,16 @@ public class LoginActivity extends AppCompatActivity{
             String name = mAuth.getCurrentUser().getDisplayName();
             String email = mAuth.getCurrentUser().getEmail();
 
+            //if the name is nu
+            if(name != null){
+                String image=mAuth.getCurrentUser().getPhotoUrl().toString();
+                intent.putExtra("profile_picture",image);
+            }else{
+                name = getNameFB(uid);
+            }
             intent.putExtra("user_id", uid);
             intent.putExtra("user_name", name);
             intent.putExtra("user_email", email);
-            if(name!=null){
-                String image=mAuth.getCurrentUser().getPhotoUrl().toString();
-                intent.putExtra("profile_picture",image);
-            }
             startActivity(intent);
             finish();
         }
@@ -186,7 +189,8 @@ public class LoginActivity extends AppCompatActivity{
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
-                            name = getName(uid, name);
+                            if (name==null)
+                                name = getNameFB(uid);
 
                             intent.putExtra("user_id",uid);
                             intent.putExtra("user_name",name);
@@ -199,26 +203,24 @@ public class LoginActivity extends AppCompatActivity{
                 });
     }
 
-    private String getName(String uid, String name)
+    private String getNameFB(String uid)
     {
-        if(name == null)
-            //global var so name can be passed as intent
-            mRef.child("users").child(uid).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
-                //onDataChange is called every time the name of the User changes in your Firebase Database
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    String userName = dataSnapshot.getValue(String.class);
-                    nameGlobal = userName;
-                }
+        //Referring to the name of the User who has logged in currently and adding a valueChangeListener
+        mRef.child("users/" + uid).child("name").addValueEventListener(new ValueEventListener() {
+            //onDataChange is called every time the name of the User changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userName = dataSnapshot.getValue(String.class);
+                nameGlobal = userName;
+            }
 
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-                    Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
-
-            name = nameGlobal;
-        return name;
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getApplicationContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+        return nameGlobal;
     }
 
     private Boolean isTextValidateForLogin() {
@@ -228,15 +230,14 @@ public class LoginActivity extends AppCompatActivity{
         Boolean isValid = true;
 
         //Email validation to ensure email is input correctly
-        String regexEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        String regexEmail = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
         //validate email
         if (TextUtils.isEmpty(email)) {
             editTextEmail.setError("Required.");
             isValid = false;
         }else if (email.length() > 40){
-            editTextEmail.setError("40 character limit");
+            editTextEmail.setError("40 character limit:" + email.length());
             isValid = false;
         }else if (!isRegexValid(email, regexEmail)){
             editTextEmail.setError("Invalid Email.");
@@ -248,10 +249,10 @@ public class LoginActivity extends AppCompatActivity{
             editTextPassword.setError("Required.");
             isValid = false;
         }else if (password.length() < 6){
-            editTextPassword.setError("6 or more characters.");
+            editTextPassword.setError("6 or more characters:" + password.length());
             isValid = false;
         }else if(password.length() > 40){
-            editTextPassword.setError("40 character limit");
+            editTextPassword.setError("40 character limit:" + password.length());
             isValid = false;
         }
         return isValid;

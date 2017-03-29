@@ -3,11 +3,8 @@ package project.year.afinal.studentadvice;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,10 +36,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.firebase.client.Firebase;
 
 import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity
@@ -123,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         {
             new ImageLoadTask(imageUrl, profilePicture).execute();
         }
-        else {
+        if (nameTmp == null) {
             //Referring to the name of the User who has logged in currently and adding a valueChangeListener
             myFirebaseRef.child("users").child(uid).child("name").addValueEventListener(new ValueEventListener() {
                 //onDataChange is called every time the name of the User changes in your Firebase Database
@@ -204,6 +198,13 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_post_advice) {
             // Handle the Post advice
             PostAdvice fragment = new PostAdvice();
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
+
+        } else if (id == R.id.nav_my_posts) {
+            MyPosts fragment = new MyPosts();
             FragmentTransaction fragmentTransaction =
                     getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container, fragment);
