@@ -26,6 +26,7 @@ android {
         exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/NOTICE'
     }
+    sourceSets { main { java.srcDirs = ['src/main/java', 'src/main/java/models'] } }
 }
 
 dependencies {
@@ -44,6 +45,7 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.9.0'
     compile 'com.google.android.gms:play-services-auth:10.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
