@@ -40,8 +40,13 @@ public class Post {
 
     public String getTitle(){return this.title;}
 
-    public String getMassagePreview(int CharAmount){
-        return this.message.substring(0, Math.min(message.length(), CharAmount));
+    public String getMassage(){return this.message;}
+
+    public String getMassagePreview(int CharAmount) {
+        if (this.message.length() > CharAmount)
+            return this.message.substring(0, Math.min(message.length(), CharAmount)) + "...";
+        else
+            return this.message;
     }
 
     @Exclude

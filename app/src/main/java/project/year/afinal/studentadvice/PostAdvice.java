@@ -18,8 +18,10 @@ import android.widget.Toast;
 import java.util.Map;
 import java.util.HashMap;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -38,7 +40,9 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
     private EditText editTextTitle;
     private EditText editTextPost;
     private Button post;
-    private ProgressDialog mProgressDialog;
+
+    //make this public so it can be passed in as an intent to the main activity
+    public String nameGlobal;
 
 
     public PostAdvice() {
@@ -53,6 +57,12 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Post Advice");
         mRef = ((MainActivity) getActivity()).myFirebaseRef;
         mAuth = ((MainActivity) getActivity()).mAuth;
+
+
+        String uid = mAuth.getCurrentUser().getUid();
+        String name = mAuth.getCurrentUser().getDisplayName();
+        if (name==null)
+            setName(uid);
 
         //UI references
         editTextTitle = (EditText) view.findViewById(R.id.editText_AdviceHeader);
@@ -70,12 +80,12 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
     {
         if(isTextValidate()) {
             String uid = mAuth.getCurrentUser().getUid();
-            String name = mAuth.getCurrentUser().getDisplayName();
             String title = editTextTitle.getText().toString().trim();
             String message = editTextPost.getText().toString().trim();
 
+
             String key = mRef.child("advice").push().getKey();
-            Post post = new Post(uid, name, title, message, 0, 0);
+            Post post = new Post(uid, nameGlobal, title, message, 0, 0);
             Map<String, Object> postValues = post.toMap();
             Map<String, Object> childUpdates = new HashMap<>();
             childUpdates.put("/advice/" + key, postValues);
@@ -129,5 +139,24 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
         {
             postAdvice();
         }
+    }
+
+    private void setName(String uid)
+    {
+        //Referring to the name of the User who has logged in currently and adding a valueChangeListener
+        mRef.child("users/" + uid).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
+            //onDataChange is called every time the name of the User changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userName = dataSnapshot.getValue(String.class);
+                nameGlobal = userName;
+            }
+
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

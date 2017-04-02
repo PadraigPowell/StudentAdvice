@@ -16,10 +16,10 @@
         android:id="@+id/profileImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="15dp"
-        android:paddingLeft="15dp"
         android:maxHeight="40dp"
-        android:maxWidth="40dp"/>
+        android:maxWidth="40dp"
+        android:paddingTop="12dp"
+        android:src="@drawable/ic_account" />
 
     <TextView
         android:id="@+id/displayName"
