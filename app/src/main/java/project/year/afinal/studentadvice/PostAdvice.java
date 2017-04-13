@@ -85,7 +85,7 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
 
 
             String key = mRef.child("advice").push().getKey();
-            Post post = new Post(uid, nameGlobal, title, message, 0, 0);
+            Post post = new Post(uid, nameGlobal, title, message, 0, 0, 0, 0);
             Map<String, Object> postValues = post.toMap();
             Map<String, Object> childUpdates = new HashMap<>();
             childUpdates.put("/advice/" + key, postValues);

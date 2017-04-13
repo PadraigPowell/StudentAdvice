@@ -24,6 +24,8 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Student Advice");
 
+        ((MainActivity) getActivity()).LoadAdvice();
+
 
 
 

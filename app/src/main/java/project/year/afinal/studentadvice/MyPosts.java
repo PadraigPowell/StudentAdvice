@@ -75,7 +75,7 @@ public class MyPosts extends ListFragment {
                     adviceList.add(post);
 
                     Map<String, String> datum = new HashMap<>(2);
-                    datum.put("title", post.getTitle());
+                    datum.put("title", post.getTitle() + "\n" + post.getDateTime(getContext()));
                     datum.put("message", post.getMassagePreview(40));
                     data.add(datum);
                 }

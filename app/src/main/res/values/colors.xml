@@ -7,4 +7,5 @@
     <color name="endColor">#ff283593</color>
     <color name="startColor">#ff3367d6</color>
     <color name="darkText">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

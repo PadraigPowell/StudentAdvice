@@ -7,6 +7,11 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.Map;
 import java.util.HashMap;
 import java.lang.annotation.Annotation;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.content.Context;
+import android.text.format.DateUtils;
 
 /**
  * Created by Lorcan on 27/03/2017.
@@ -15,12 +20,14 @@ import java.lang.annotation.Annotation;
 @IgnoreExtraProperties
 public class Post {
     public String uid;
-    public long timestamp;
-    public String title;
-    public long disagreeCount;
-    public String message;
-    public long likeCount;
     public String author;
+    public String title;
+    public String message;
+    public Long timestamp;
+    public long disagreeCount;
+    public long agreeCount;
+    public long commentCount;
+    public long saveCount;
 
     @Exclude
     public String advice;
@@ -29,24 +36,49 @@ public class Post {
     public Post() {
     }
 
-    public Post(String uid, String author, String title, String message, int likeCount, int disagreeCount) {
+    public Post(String uid, String author, String title, String message, int disagreeCount, int agreeCount, int saveCount, int commentCount) {
         this.uid = uid;
         this.author = author;
         this.title = title;
         this.message = message;
-        this.likeCount = likeCount;
         this.disagreeCount = disagreeCount;
+        this.agreeCount = agreeCount;
+        this.saveCount = saveCount;
+        this.commentCount = commentCount;
     }
 
     public String getTitle(){return this.title;}
 
     public String getMassage(){return this.message;}
 
+    public String getAuther(){return this.author;}
+
+    public String getAgreeMsg(){return this.agreeCount + " Agree";}
+
+    public String getDisagreeMsg(){return this.disagreeCount + " Disagree";}
+
+    public String getCommentMsg(){return this.commentCount + " Comments";}
+
+    public String getSaveMsg(){return this.saveCount + " Saves";}
+
     public String getMassagePreview(int CharAmount) {
         if (this.message.length() > CharAmount)
-            return this.message.substring(0, Math.min(message.length(), CharAmount)) + "...";
+            return this.message.substring(0, Math.min(message.length(), CharAmount-3)) + "...";
         else
             return this.message;
+    }
+
+    public String getDateTime(Context context)
+    {
+
+        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        sfd.format(new Date(this.timestamp));
+        String date = DateUtils.getRelativeDateTimeString(context,
+                timestamp,
+                DateUtils.MINUTE_IN_MILLIS,
+                DateUtils.WEEK_IN_MILLIS,
+                0).toString();
+        return date;
     }
 
     @Exclude
@@ -58,9 +90,12 @@ public class Post {
         result.put("author", author);
         result.put("title", title);
         result.put("message", message);
-        result.put("likeCount", likeCount);
-        result.put("disagreeCount", disagreeCount);
-        result.put("timestamp", timestamp);
+        result.put("message", message);
+        result.put("likeCount", disagreeCount);
+        result.put("likeCount", agreeCount);
+        result.put("commentCount", commentCount);
+        result.put("saveCount", saveCount);
+        result.put("timestamp", ServerValue.TIMESTAMP);
 
         return result;
     }
