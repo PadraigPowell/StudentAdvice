@@ -1,76 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="408dp"
-android:layout_height="500dp"
-android:layout_marginBottom="50dp"
-android:orientation="vertical">
-<android.support.v7.widget.CardView
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp"
-    app:cardCornerRadius="7dp"
-    app:cardElevation="4dp">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="350dp"
+    android:layout_height="450dp"
+    android:layout_marginBottom="50dp"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/head"
-        android:scaleType="centerCrop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="25dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="Name Title"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.CardView
         android:orientation="vertical"
-        android:layout_gravity="top"
-        android:paddingTop="50dp"
-        android:gravity="center|start">
+        android:layout_gravity="top|center_horizontal"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="4dp">
+
         <TextView
-            android:id="@+id/message"
-            android:layout_height="wrap_content"
+            android:id="@+id/head"
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
-            android:textSize="18sp"
-            android:text="Message"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_gravity="bottom"
-        android:gravity="center|start">
-        <TextView
-            android:id="@+id/DisagreeCount"
-            android:layout_width="wrap_content"
-            android:textSize="16sp"
-            android:text="DisagreeCount"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_height="wrap_content"/>
+            android:text="Name Title"/>
 
-        <TextView
-            android:id="@+id/save_comment_count"
-            android:layout_width="wrap_content"
-            android:textSize="16sp"
-            android:text="save_comment"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="top"
+            android:paddingTop="75dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center|start">
+            <TextView
+                android:id="@+id/message"
+                android:layout_height="400dp"
+                android:layout_width="match_parent"
+                android:textSize="18sp"
+                android:text="Message"/>
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/AgreeCount"
-            android:layout_width="wrap_content"
-            android:textSize="16sp"
-            android:text="AgreeCount"
-            android:textStyle="bold"
-            android:layout_alignParentRight="true"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:gravity="center|start">
+            <TextView
+                android:id="@+id/DisagreeCount"
+                android:layout_width="wrap_content"
+                android:textSize="15sp"
+                android:text="DisagreeCount"
+                android:textStyle="bold"
+                android:textColor="@color/red"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/save_comment_count"
+                android:layout_width="wrap_content"
+                android:textSize="15sp"
+                android:text="save_comment"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/AgreeCount"
+                android:layout_width="wrap_content"
+                android:textSize="15sp"
+                android:text="AgreeCount"
+                android:textColor="@color/green"
+                android:textStyle="bold"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </FrameLayout>

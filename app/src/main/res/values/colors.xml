@@ -8,4 +8,6 @@
     <color name="startColor">#ff3367d6</color>
     <color name="darkText">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="green">#32CD32</color>
+    <color name="red">#FF0000</color>
 </resources>

@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:layout_marginTop="?android:attr/actionBarSize"
-tools:context="project.year.afinal.studentadvice.MainFragment"
-android:orientation="vertical"
-android:background="@color/colorPrimary">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="50dp"
+    tools:context="project.year.afinal.studentadvice.MainFragment"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Content to Show"
+        android:textSize="25sp"
+        android:layout_gravity="center"/>
+
+    <com.mindorks.placeholderview.SwipePlaceHolderView
+        android:id="@+id/swipeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -43,8 +56,5 @@ android:background="@color/colorPrimary">
             android:layout_margin="20dp"
             android:background="@drawable/ic_thumb_up"/>
     </LinearLayout>
-    <com.mindorks.placeholderview.SwipePlaceHolderView
-        android:id="@+id/swipeView"
-        android:layout_width="match_parent"
-        android:layout_height="600dp"/>
+
 </FrameLayout>

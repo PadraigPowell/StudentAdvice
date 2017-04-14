@@ -30,7 +30,7 @@ public class Post {
     public long saveCount;
 
     @Exclude
-    public String advice;
+    public String adviceKey;
 
 
     public Post() {
@@ -70,9 +70,6 @@ public class Post {
 
     public String getDateTime(Context context)
     {
-
-        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        sfd.format(new Date(this.timestamp));
         String date = DateUtils.getRelativeDateTimeString(context,
                 timestamp,
                 DateUtils.MINUTE_IN_MILLIS,
@@ -82,7 +79,13 @@ public class Post {
     }
 
     @Exclude
-    public void setAdviceKey(String advice) {this.advice = advice;}
+    public void setAdviceKey(String advice) {this.adviceKey = advice;}
+
+    @Exclude
+    public String getAdviceKey()
+    {
+        return this.adviceKey;
+    }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
@@ -91,8 +94,8 @@ public class Post {
         result.put("title", title);
         result.put("message", message);
         result.put("message", message);
-        result.put("likeCount", disagreeCount);
-        result.put("likeCount", agreeCount);
+        result.put("disagreeCount", disagreeCount);
+        result.put("agreeCount", agreeCount);
         result.put("commentCount", commentCount);
         result.put("saveCount", saveCount);
         result.put("timestamp", ServerValue.TIMESTAMP);

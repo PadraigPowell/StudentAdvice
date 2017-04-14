@@ -61,8 +61,24 @@ public class MainActivity extends AppCompatActivity
     //public User user;
     //private ArrayList<Post> adviceList;
 
-    private SwipePlaceHolderView mSwipeView;
+    //private SwipePlaceHolderView mSwipeView;
     private Context mContext;
+
+    public Context getContext()
+    {
+        return mContext;
+    }
+
+    /*public void setSwipeView(SwipePlaceHolderView mSwipeView)
+    {
+        this.mSwipeView = mSwipeView;
+    }
+
+    public SwipePlaceHolderView getSwipeView()
+    {
+        return this.mSwipeView;
+    }*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +93,7 @@ public class MainActivity extends AppCompatActivity
             Log.e(TAG, "mUser is null");
         }
 
-        mSwipeView = (SwipePlaceHolderView)findViewById(R.id.swipeView);
         mContext = getApplicationContext();
-
-        mSwipeView.getBuilder()
-                .setDisplayViewCount(3)
-                .setSwipeDecor(new SwipeDecor()
-                        .setPaddingTop(20)
-                        .setRelativeScale(0.01f)
-                        .setSwipeInMsgLayoutId(R.layout.swipe_in_message_view)
-                        .setSwipeOutMsgLayoutId(R.layout.swipe_out_message_view));
 
         //set fragment init
         MainFragment fragment = new MainFragment();
@@ -122,7 +129,6 @@ public class MainActivity extends AppCompatActivity
         name = (TextView) header.findViewById(R.id.displayName);
         email = (TextView) header.findViewById(R.id.displayEmail);
         profilePicture = (ImageView) header.findViewById(R.id.profileImage);
-
 
         //Get data passed from the login Activity through extra
         Intent intent = getIntent();
@@ -171,29 +177,6 @@ public class MainActivity extends AppCompatActivity
         client.disconnect();
     }
 
-    public void LoadAdvice()
-    {
-        myFirebaseRef.child("advice").orderByChild("uid").addValueEventListener(new ValueEventListener() {
-            //onDataChange is called every time the name of the User changes in your Firebase Database
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    String advice = postSnapshot.toString();
-                    Log.d(TAG, "Advice:" + advice);
-                    Post post = postSnapshot.getValue(Post.class);
-                    post.setAdviceKey(postSnapshot.getKey());
-                    //adviceList.add(post);
-                    mSwipeView.addView(new AdviceCard(mContext, post, mSwipeView));
-                }
-            }
-            //onCancelled is called in case of any error
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.d(TAG, "Firebase error: " + firebaseError.getMessage());
-                Toast.makeText(MainActivity.this, "Firebase error: " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 
     @Override
     public void onBackPressed() {

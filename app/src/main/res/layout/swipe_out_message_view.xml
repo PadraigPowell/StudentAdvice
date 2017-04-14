@@ -11,7 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="40dp"
         android:text="Disagree"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/red"
         android:textSize="32sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:paddingTop="200dp"/>
 </LinearLayout>

@@ -61,8 +61,11 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
 
         String uid = mAuth.getCurrentUser().getUid();
         String name = mAuth.getCurrentUser().getDisplayName();
-        if (name==null)
+        if (name==null) {
             setName(uid);
+        }else{
+            nameGlobal = name;
+        }
 
         //UI references
         editTextTitle = (EditText) view.findViewById(R.id.editText_AdviceHeader);
