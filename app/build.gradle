@@ -28,8 +28,12 @@ android {
     }
     sourceSets { main { java.srcDirs = ['src/main/java', 'src/main/java/models'] } }
 
-    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/']
-            res.srcDirs = ['src/main/res', 'src/main/res/drawable'] } }
+    sourceSets {
+        main {
+            assets.srcDirs = ['src/main/assets', 'src/main/assets/']
+            res.srcDirs = ['src/main/res', 'src/main/res/drawable']
+        }
+    }
 }
 
 dependencies {

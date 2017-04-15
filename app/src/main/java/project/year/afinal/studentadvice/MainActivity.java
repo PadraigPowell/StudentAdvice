@@ -251,6 +251,13 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
 
+        } else if (id == R.id.nav_saved) {
+            Saved fragment = new Saved();
+            FragmentTransaction fragmentTransaction =
+                    getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
+            fragmentTransaction.commit();
+
         } else if (id == R.id.nav_settings) {
             settings fragment = new settings();
             FragmentTransaction fragmentTransaction =

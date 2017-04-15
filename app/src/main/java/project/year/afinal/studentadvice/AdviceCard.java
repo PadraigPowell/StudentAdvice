@@ -39,12 +39,13 @@ public class AdviceCard {
     @View(R.id.DisagreeCount)
     private TextView DisagreeMsg;
 
+    private boolean hasSaved = false;
     private Context mContext;
     private Post mPost;
     private SwipePlaceHolderView mSwipeView;
+
     private static final String TAG = "AdviceCard";
     private Firebase value;
-
     private Firebase mRef;
     private FirebaseAuth mAuth;
 
@@ -65,8 +66,14 @@ public class AdviceCard {
 
     public void updateSave()
     {
+        this.hasSaved = true;
         this.mPost.incrementSave();
         save_comment_msg.setText("   " + mPost.getSaveMsg() + "   " + mPost.getCommentMsg());
+    }
+
+    public boolean hasUserSaved()
+    {
+        return this.hasSaved;
     }
 
     @Resolve

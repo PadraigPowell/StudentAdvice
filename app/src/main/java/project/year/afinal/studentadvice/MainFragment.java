@@ -78,31 +78,8 @@ public class MainFragment extends Fragment {
         mRef = ((MainActivity) getActivity()).myFirebaseRef;
         mAuth = ((MainActivity) getActivity()).mAuth;
 
-        mRef.child("advice").orderByChild("uid").addListenerForSingleValueEvent(new ValueEventListener() {
-            //onDataChange is called every time the name of the User changes in your Firebase Database
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    String advice = postSnapshot.toString();
-                    Log.d(TAG, "Advice:" + advice);
-                    Post post = postSnapshot.getValue(Post.class);
-                    post.setAdviceKey(postSnapshot.getKey());
-                    mSwipeView.addView(new AdviceCard(mContext, post, mSwipeView, mAuth, mRef));
-                }
-                if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
-                    m_ProgressDialog.dismiss();
-                }else
-                {
-                    Toast.makeText(getContext(), "Network Available", Toast.LENGTH_LONG).show();
-                }
-            }
-            //onCancelled is called in case of any error
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.d(TAG, "Firebase error: " + firebaseError.getMessage());
-                Toast.makeText(getContext(), "Firebase error: " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        //get the data from the database and add it to the swipe view
+        pollFromDatabase();
 
         view.findViewById(R.id.downBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +101,14 @@ public class MainFragment extends Fragment {
                 List<Object> t = mSwipeView.getAllResolvers();
                 t.size();
                 AdviceCard adviceCard = (AdviceCard) t.get(0);
+
+                //when the user updates the save counter they set this value to true
+                //this is used so the user can only save one value at a time
+                if (adviceCard.hasUserSaved()) {
+                    Toast.makeText(getContext(), "Advice already Saved",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 //update the local save count
                 adviceCard.updateSave();
@@ -156,11 +141,40 @@ public class MainFragment extends Fragment {
                     }
                 });
                 Toast.makeText(getContext(), "Saved",
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
             }
         });
 
         return view;
+    }
+
+    private void pollFromDatabase()
+    {
+        mRef.child("advice").addListenerForSingleValueEvent(new ValueEventListener() {
+            //onDataChange is called every time the name of the User changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String advice = postSnapshot.toString();
+                    Log.d(TAG, "Advice:" + advice);
+                    Post post = postSnapshot.getValue(Post.class);
+                    post.setAdviceKey(postSnapshot.getKey());
+                    mSwipeView.addView(new AdviceCard(mContext, post, mSwipeView, mAuth, mRef));
+                }
+                if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
+                    m_ProgressDialog.dismiss();
+                }else
+                {
+                    Toast.makeText(getContext(), "Network Available", Toast.LENGTH_LONG).show();
+                }
+            }
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d(TAG, "Firebase error: " + firebaseError.getMessage());
+                Toast.makeText(getContext(), "Firebase error: " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private boolean isNetworkAvailable() {

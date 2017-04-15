@@ -1,17 +1,20 @@
 package project.year.afinal.studentadvice;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.SimpleAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -20,16 +23,14 @@ import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import android.app.ProgressDialog;
-import android.app.AlertDialog;
 
 
-public class MyPosts extends ListFragment {
+public class Saved extends Fragment {
 
-    private static final String TAG = "MyPostsFragment";
+    private static final String TAG = "SavedAdvice";
     private Firebase mRef;
     private FirebaseAuth mAuth;
     private ArrayList<Post> adviceList;
@@ -38,14 +39,16 @@ public class MyPosts extends ListFragment {
     private List<Map<String, String>> data;
     private ProgressDialog m_ProgressDialog;
 
-    public MyPosts() {
+    public Saved() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("Saved Advice");
+
         Log.d(TAG, "onCreate");
 
         View view = inflater.inflate(R.layout.fragment_my_posts, container, false);
@@ -60,10 +63,10 @@ public class MyPosts extends ListFragment {
 
         data = new ArrayList<>();
 
-        new setProgress();
+        new Saved.setProgress();
 
         String uid = mAuth.getCurrentUser().getUid();
-        mRef.child("advice").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child("advice").orderByKey().equalTo("root/").addListenerForSingleValueEvent(new ValueEventListener() {
             //onDataChange is called every time the name of the User changes in your Firebase Database
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -94,7 +97,6 @@ public class MyPosts extends ListFragment {
                 Toast.makeText(getContext(), "Firebase error: " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
-
         return view;
     }
 
@@ -107,16 +109,14 @@ public class MyPosts extends ListFragment {
                         android.R.id.text2});
         myAdvice.setAdapter(adapter);
 
-        myAdvice.setOnItemClickListener(new OnItemClickListener() {
+        myAdvice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "setOnItemClickListener.onItemClick " + position);
                 AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
                 adb.setTitle(adviceList.get(position).getTitle());
                 adb.setMessage(adviceList.get(position).getMassage()+"\n"+
-                        adviceList.get(position).getDisagreeMsg() + "   "+
-                        adviceList.get(position).getSaveMsg() + "   " +
-                        adviceList.get(position).getCommentMsg() + "   " +
+                        adviceList.get(position).getDisagreeMsg() + "     "+
                         adviceList.get(position).getAgreeMsg());
                 adb.setPositiveButton("Ok", null);
                 adb.show();

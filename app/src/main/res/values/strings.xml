@@ -16,12 +16,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="title_activity_login">StudentAdviceLogin</string>
     <string name="title_activity_signup">StudentAdviceSignup</string>
-    <string name="postHint">Enter Advice here</string>
+    <string name="postHint">Enter Advice here. 550 Character Limit</string>
     <string name="postHeaderHint">Enter Advice Title</string>
     <string name="commentHint">Enter Comment here</string>
     <string name="postAdvice">Post Advice  </string>
     <string name="postAdviceSuccess">Your Advice has been Successfully Posted</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

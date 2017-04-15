@@ -121,8 +121,8 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
         if (TextUtils.isEmpty(message)) {
             editTextPost.setError("Enter Advice");
             isValid = false;
-        }else if (message.length() > 1000){
-            editTextPost.setError("1000 character limit:" + message.length());
+        }else if (message.length() > 550){
+            editTextPost.setError("550 character limit:" + message.length());
             isValid = false;
         }
         return isValid;
