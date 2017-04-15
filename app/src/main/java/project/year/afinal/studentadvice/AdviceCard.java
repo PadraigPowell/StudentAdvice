@@ -78,7 +78,7 @@ public class AdviceCard {
 
     @Resolve
     private void onResolved(){
-        HeadMsg.setText(mPost.getAuther() + ": " + mPost.getTitle() + ".\nPosted: " + mPost.getDateTime(this.mContext));
+        HeadMsg.setText(mPost.getAuthor() + ": " + mPost.getTitle() + ".\nPosted: " + mPost.getDateTime(this.mContext));
         MessageText.setText(mPost.getMassage());
         DisagreeMsg.setText(mPost.getDisagreeMsg());
         AgreeMsg.setText(mPost.getAgreeMsg());

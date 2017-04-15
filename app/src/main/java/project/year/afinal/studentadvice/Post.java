@@ -53,15 +53,15 @@ public class Post {
 
     public String getMassage(){return this.message;}
 
-    public String getAuther(){return this.author;}
+    public String getAuthor(){return this.author;}
 
     public String getAgreeMsg(){return this.agreeCount + " Agree";}
 
     public String getDisagreeMsg(){return this.disagreeCount + " Disagree";}
 
-    public String getCommentMsg(){return this.commentCount + " Comments";}
+    public String getCommentMsg(){return this.commentCount + " Comment";}
 
-    public String getSaveMsg(){return this.saveCount + " Saves";}
+    public String getSaveMsg(){return this.saveCount + " Save";}
 
     public String getMassagePreview(int CharAmount) {
         if (this.message.length() > CharAmount)

@@ -54,7 +54,6 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Student Advice");
-
         mContext = ((MainActivity) getActivity()).getContext();
 
         if (!isNetworkAvailable()){

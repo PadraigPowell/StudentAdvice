@@ -3,6 +3,8 @@ package project.year.afinal.studentadvice;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,6 +40,8 @@ public class Saved extends Fragment {
     private TextView noAdviceMessage;
     private List<Map<String, String>> data;
     private ProgressDialog m_ProgressDialog;
+    private Context mContext;
+    private int globalCountSaved;
 
     public Saved() {
         // Required empty public constructor
@@ -46,47 +50,76 @@ public class Saved extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_saved, container, false);
+        Log.d(TAG, "onCreateView");
 
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Saved Advice");
-
-        Log.d(TAG, "onCreate");
-
-        View view = inflater.inflate(R.layout.fragment_my_posts, container, false);
-        myAdvice = (ListView) view.findViewById(android.R.id.list);
-        noAdviceMessage = (TextView) view.findViewById(R.id.nothingToShow);
-
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("My Posts");
-        adviceList = new ArrayList<>();
-
+        mContext = ((MainActivity) getActivity()).getContext();
         mRef = ((MainActivity) getActivity()).myFirebaseRef;
         mAuth = ((MainActivity) getActivity()).mAuth;
-
+        myAdvice = (ListView) view.findViewById(android.R.id.list);
+        noAdviceMessage = (TextView) view.findViewById(R.id.nothingSaved);
+        adviceList = new ArrayList<>();
         data = new ArrayList<>();
+        globalCountSaved = 0;
 
-        new Saved.setProgress();
+        if (!isNetworkAvailable()){
+            Toast.makeText(getContext(), "Network Unavailable", Toast.LENGTH_LONG).show();
+            noAdviceMessage.setVisibility(View.VISIBLE);
+        }else{
+            m_ProgressDialog = ProgressDialog.show(getActivity(),
+                    "Please wait...", "Retrieving data ...", true);
+        }
 
         String uid = mAuth.getCurrentUser().getUid();
-        mRef.child("advice").orderByKey().equalTo("root/").addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.child("users/"+uid+"/savedAdvice").addListenerForSingleValueEvent(new ValueEventListener() {
             //onDataChange is called every time the name of the User changes in your Firebase Database
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    String advice = postSnapshot.toString();
-                    Log.d(TAG, "Advice:" + advice);
-                    Post post = postSnapshot.getValue(Post.class);
-                    post.setAdviceKey(postSnapshot.getKey());
-                    adviceList.add(post);
+                for (DataSnapshot savedSnapshot : dataSnapshot.getChildren()) {
+                    globalCountSaved += 1;
+                    mRef.child("advice/"+savedSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot postSnapshot) {
+                            String advice = postSnapshot.toString();
+                            Log.d(TAG, "Advice:" + advice);
+                            Post post = postSnapshot.getValue(Post.class);
+                            post.setAdviceKey(postSnapshot.getKey());
+                            adviceList.add(post);
+                            Map<String, String> datum = new HashMap<>(2);
+                            datum.put("title", post.getTitle() + "\n" + post.getDateTime(getContext()));
+                            datum.put("message", post.getMassagePreview(40));
+                            data.add(datum);
 
-                    Map<String, String> datum = new HashMap<>(2);
-                    datum.put("title", post.getTitle() + "\n" + post.getDateTime(getContext()));
-                    datum.put("message", post.getMassagePreview(40));
-                    data.add(datum);
+                            if ( data.size() != globalCountSaved ) {
+                                noAdviceMessage.setVisibility(View.VISIBLE);
+                            }else{
+                                if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
+                                    m_ProgressDialog.dismiss();
+                                }else
+                                {
+                                    Toast.makeText(getContext(), "Network Available", Toast.LENGTH_LONG).show();
+                                }
+                                noAdviceMessage.setVisibility(View.INVISIBLE);
+                                addToAdapter();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            Log.d(TAG, "Firebase error: " + firebaseError.getMessage());
+                            Toast.makeText(getContext(), "Firebase error: " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
-                m_ProgressDialog.dismiss();
-                if ( data.size() == 0 ) {
+                //if the user has not yet saved any advice
+                if (globalCountSaved == 0) {
                     noAdviceMessage.setVisibility(View.VISIBLE);
-                }else {
-                    addToAdapter();
+                    if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
+                        m_ProgressDialog.dismiss();
+                    } else {
+                        Toast.makeText(getContext(), "Network Available", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
@@ -116,7 +149,9 @@ public class Saved extends Fragment {
                 AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
                 adb.setTitle(adviceList.get(position).getTitle());
                 adb.setMessage(adviceList.get(position).getMassage()+"\n"+
-                        adviceList.get(position).getDisagreeMsg() + "     "+
+                        adviceList.get(position).getDisagreeMsg() + "   "+
+                        adviceList.get(position).getSaveMsg() + "   " +
+                        adviceList.get(position).getCommentMsg() + "   " +
                         adviceList.get(position).getAgreeMsg());
                 adb.setPositiveButton("Ok", null);
                 adb.show();
@@ -130,5 +165,12 @@ public class Saved extends Fragment {
             m_ProgressDialog = ProgressDialog.show(getActivity(),
                     "Please wait...", "Retrieving data ...", true);
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

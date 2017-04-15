@@ -1,5 +1,8 @@
 package project.year.afinal.studentadvice;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -37,6 +40,7 @@ public class MyPosts extends ListFragment {
     private TextView noAdviceMessage;
     private List<Map<String, String>> data;
     private ProgressDialog m_ProgressDialog;
+    private Context mContext;
 
     public MyPosts() {
         // Required empty public constructor
@@ -58,9 +62,17 @@ public class MyPosts extends ListFragment {
         mRef = ((MainActivity) getActivity()).myFirebaseRef;
         mAuth = ((MainActivity) getActivity()).mAuth;
 
-        data = new ArrayList<>();
+        mContext = ((MainActivity) getActivity()).getContext();
 
-        new setProgress();
+        if (!isNetworkAvailable()){
+            Toast.makeText(getContext(), "Network Unavailable", Toast.LENGTH_LONG).show();
+            noAdviceMessage.setVisibility(View.VISIBLE);
+        }else{
+            m_ProgressDialog = ProgressDialog.show(getActivity(),
+                    "Please wait...", "Retrieving data ...", true);
+        }
+
+        data = new ArrayList<>();
 
         String uid = mAuth.getCurrentUser().getUid();
         mRef.child("advice").orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -79,7 +91,14 @@ public class MyPosts extends ListFragment {
                     datum.put("message", post.getMassagePreview(40));
                     data.add(datum);
                 }
-                m_ProgressDialog.dismiss();
+                if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
+                    m_ProgressDialog.dismiss();
+                }else
+                {
+                    noAdviceMessage.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getContext(), "Network Available", Toast.LENGTH_LONG).show();
+                }
+
                 if ( data.size() == 0 ) {
                     noAdviceMessage.setVisibility(View.VISIBLE);
                 }else {
@@ -124,11 +143,11 @@ public class MyPosts extends ListFragment {
         });
     }
 
-    private class setProgress {
-        setProgress(){
-            Log.d(TAG, "setProgress Constructor");
-            m_ProgressDialog = ProgressDialog.show(getActivity(),
-                    "Please wait...", "Retrieving data ...", true);
-        }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
