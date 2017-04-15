@@ -2,8 +2,8 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="408dp"
-    android:layout_height="500dp">
+    android:layout_width="350dp"
+    android:layout_height="450dp">
 
     <TextView
         android:id="@+id/textView2"

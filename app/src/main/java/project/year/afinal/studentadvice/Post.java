@@ -47,6 +47,8 @@ public class Post {
         this.commentCount = commentCount;
     }
 
+    public void incrementSave(){this.saveCount += 1;}
+
     public String getTitle(){return this.title;}
 
     public String getMassage(){return this.message;}

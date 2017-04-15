@@ -2,7 +2,10 @@ package project.year.afinal.studentadvice;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,6 +24,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +40,7 @@ public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
     private Firebase mRef;
     private FirebaseAuth mAuth;
+    private ProgressDialog m_ProgressDialog;
 
     public MainFragment() {
         // Required empty public constructor
@@ -48,6 +56,13 @@ public class MainFragment extends Fragment {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Student Advice");
 
         mContext = ((MainActivity) getActivity()).getContext();
+
+        if (!isNetworkAvailable()){
+            Toast.makeText(getContext(), "Network Unavailable", Toast.LENGTH_LONG).show();
+        }else{
+            m_ProgressDialog = ProgressDialog.show(getActivity(),
+                    "Please wait...", "Retrieving data ...", true);
+        }
 
         mSwipeView = (SwipePlaceHolderView) view.findViewById(R.id.swipeView);
 
@@ -72,8 +87,13 @@ public class MainFragment extends Fragment {
                     Log.d(TAG, "Advice:" + advice);
                     Post post = postSnapshot.getValue(Post.class);
                     post.setAdviceKey(postSnapshot.getKey());
-                    //adviceList.add(post);
-                    mSwipeView.addView(new AdviceCard(mContext, post, mSwipeView));
+                    mSwipeView.addView(new AdviceCard(mContext, post, mSwipeView, mAuth, mRef));
+                }
+                if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
+                    m_ProgressDialog.dismiss();
+                }else
+                {
+                    Toast.makeText(getContext(), "Network Available", Toast.LENGTH_LONG).show();
                 }
             }
             //onCancelled is called in case of any error
@@ -98,20 +118,55 @@ public class MainFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.clearBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "Clear", Toast.LENGTH_LONG).show();
-            }
-        });
-
         view.findViewById(R.id.saveBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Saved", Toast.LENGTH_LONG).show();
+                List<Object> t = mSwipeView.getAllResolvers();
+                t.size();
+                AdviceCard adviceCard = (AdviceCard) t.get(0);
+
+                //update the local save count
+                adviceCard.updateSave();
+
+                Post post = adviceCard.getPost();
+
+                //add the advice key to the user node under savedAdvice
+                String uid = mAuth.getCurrentUser().getUid();
+                mRef.child("users/"+uid+"/savedAdvice/"+post.getAdviceKey()).setValue("true");
+
+                //update Server value
+                mRef.child("/advice/"+post.getAdviceKey()+"/saveCount").runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        if (mutableData.getValue() == null) {
+                            mutableData.setValue(1);
+                        } else {
+                            mutableData.setValue((Long) mutableData.getValue() + 1);
+                        }
+                        return Transaction.success(mutableData);
+                    }
+
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                        if (firebaseError != null) {
+                            Log.d(TAG, "Firebase counter increment failed. Firebase error: " + firebaseError.getMessage());
+                        } else {
+                            Log.d(TAG, "Firebase counter increment succeeded.");
+                        }
+                    }
+                });
+                Toast.makeText(getContext(), "Saved",
+                        Toast.LENGTH_LONG).show();
             }
         });
 
         return view;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

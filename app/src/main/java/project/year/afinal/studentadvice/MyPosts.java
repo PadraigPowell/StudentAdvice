@@ -113,7 +113,9 @@ public class MyPosts extends ListFragment {
                 Log.d(TAG, "setOnItemClickListener.onItemClick " + position);
                 AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
                 adb.setTitle(adviceList.get(position).getTitle());
-                adb.setMessage(adviceList.get(position).getMassage());
+                adb.setMessage(adviceList.get(position).getMassage()+"\n"+
+                        adviceList.get(position).getDisagreeMsg() + "     "+
+                        adviceList.get(position).getAgreeMsg());
                 adb.setPositiveButton("Ok", null);
                 adb.show();
             }

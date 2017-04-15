@@ -6,17 +6,16 @@ import android.widget.TextView;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.MutableData;
 import com.firebase.client.Transaction;
+import com.google.firebase.auth.FirebaseAuth;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.View;
 import com.mindorks.placeholderview.annotations.swipe.*;
 import com.mindorks.placeholderview.annotations.Resolve;
-//import com.mindorks.placeholderview.annotations.Click;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 
 /**
@@ -46,41 +45,56 @@ public class AdviceCard {
     private static final String TAG = "AdviceCard";
     private Firebase value;
 
-    public AdviceCard(Context context, Post post, SwipePlaceHolderView swipeView) {
+    private Firebase mRef;
+    private FirebaseAuth mAuth;
+
+    public AdviceCard(Context context, Post post, SwipePlaceHolderView swipeView, FirebaseAuth mAuth, Firebase mRef) {
         mContext = context;
         mPost = post;
         mSwipeView = swipeView;
 
+        this.mAuth = mAuth;
+        this.mRef = mRef;
+
         value = new Firebase("https://student-advice.firebaseio.com/advice/" + mPost.getAdviceKey());
+    }
+    public Post getPost()
+    {
+        return this.mPost;
+    }
+
+    public void updateSave()
+    {
+        this.mPost.incrementSave();
+        save_comment_msg.setText("   " + mPost.getSaveMsg() + "   " + mPost.getCommentMsg());
     }
 
     @Resolve
     private void onResolved(){
-        HeadMsg.setText(mPost.getAuther() + ": " + mPost.getTitle() + "  Posted: " + mPost.getDateTime(this.mContext));
+        HeadMsg.setText(mPost.getAuther() + ": " + mPost.getTitle() + ".\nPosted: " + mPost.getDateTime(this.mContext));
         MessageText.setText(mPost.getMassage());
         DisagreeMsg.setText(mPost.getDisagreeMsg());
         AgreeMsg.setText(mPost.getAgreeMsg());
-        save_comment_msg.setText(mPost.getSaveMsg() + "   " + mPost.getCommentMsg());
+        save_comment_msg.setText("   " + mPost.getSaveMsg() + "   " + mPost.getCommentMsg());
     }
 
-    public void savePost()
-    {
-
-    }
-
-    public void commentPost()
-    {
-
-    }
 
     @SwipeOut
     private void onSwipedOut(){
         Log.d("EVENT", "onSwipedOut");
 
+        //add the that you have disagreed with this advice to your user node
+        //String uid = mAuth.getCurrentUser().getUid();
+        //mRef.child("users/"+uid+"/disagreedAdvice/"+mPost.getAdviceKey()).setValue("true");
+
         value.child("disagreeCount").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                mutableData.setValue((Long) mutableData.getValue() + 1);
+                if (mutableData.getValue() == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue((Long) mutableData.getValue() + 1);
+                }
                 return Transaction.success(mutableData);
             }
 
@@ -99,10 +113,18 @@ public class AdviceCard {
     private void onSwipeIn(){
         Log.d("EVENT", "onSwipedIn");
 
+        //add the that you have agreed with this advice to your user node
+        //String uid = mAuth.getCurrentUser().getUid();
+        //mRef.child("users/"+uid+"/agreedAdvice/"+mPost.getAdviceKey()).setValue("true");
+
         value.child("agreeCount").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                mutableData.setValue((Long) mutableData.getValue() + 1);
+                if (mutableData.getValue() == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue((Long) mutableData.getValue() + 1);
+                }
                 return Transaction.success(mutableData);
             }
 

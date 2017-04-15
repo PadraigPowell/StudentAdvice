@@ -7,7 +7,7 @@
     android:paddingTop="50dp"
     tools:context="project.year.afinal.studentadvice.MainFragment"
     android:orientation="vertical"
-    android:background="@color/colorPrimary">
+    android:background="#4286f4">
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,28 +32,21 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:tint="@color/white"
-            android:layout_margin="20dp"
+            android:layout_margin="30dp"
             android:background="@drawable/ic_thumb_down"/>
-        <ImageButton
-            android:id="@+id/clearBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:tint="@color/white"
-            android:layout_margin="20dp"
-            android:background="@drawable/ic_clear"/>
         <ImageButton
             android:id="@+id/saveBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:tint="@color/white"
-            android:layout_margin="20dp"
+            android:layout_margin="30dp"
             android:background="@drawable/ic_save"/>
         <ImageButton
             android:id="@+id/upBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:tint="@color/white"
-            android:layout_margin="20dp"
+            android:layout_margin="30dp"
             android:background="@drawable/ic_thumb_up"/>
     </LinearLayout>
 
