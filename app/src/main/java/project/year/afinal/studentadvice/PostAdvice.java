@@ -21,6 +21,8 @@ import java.util.HashMap;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
@@ -132,6 +134,27 @@ public class PostAdvice extends Fragment  implements View.OnClickListener{
         //UI references
         post.setVisibility(View.INVISIBLE);
         textSuccess.setVisibility(View.VISIBLE);
+
+        mRef.child("adviceCount").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if (mutableData.getValue() == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue((Long) mutableData.getValue() + 1);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
+                if (firebaseError != null) {
+                    Log.d(TAG, "Firebase disagreeCount counter increment failed. Firebase error: " + firebaseError.getMessage());
+                } else {
+                    Log.d(TAG, "Firebase disagreeCount counter increment succeeded.");
+                }
+            }
+        });
 
         Toast.makeText(getContext(), "Advice Successfully Posted", Toast.LENGTH_SHORT).show();
     }

@@ -15,6 +15,10 @@
             android:icon="@drawable/ic_my_posts"
             android:title="My Advice" />
         <item
+            android:id="@+id/nav_saved"
+            android:icon="@drawable/ic_stars"
+            android:title="Saved Advice" />
+        <item
             android:id="@+id/nav_my_comments"
             android:icon="@drawable/ic_comment"
             android:title="My Comments" />
@@ -22,10 +26,6 @@
             android:id="@+id/nav_view_activity"
             android:icon="@drawable/ic_view_activity"
             android:title="My Activity" />
-        <item
-            android:id="@+id/nav_saved"
-            android:icon="@drawable/ic_stars"
-            android:title="Saved Advice" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings"

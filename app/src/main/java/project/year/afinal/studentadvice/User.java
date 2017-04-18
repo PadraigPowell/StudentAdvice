@@ -19,10 +19,6 @@ public class User {
         this.viewed = 0;
     }
 
-    public void incrementViewed(){this.viewed += 1;}
-
-    public long getViewed(){return this.viewed;}
-
     public String getName() {
         return name;
     }

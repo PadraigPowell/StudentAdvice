@@ -149,10 +149,11 @@ public class Saved extends Fragment {
                 AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
                 adb.setTitle(adviceList.get(position).getTitle());
                 adb.setMessage(adviceList.get(position).getMassage()+"\n"+
-                        adviceList.get(position).getDisagreeMsg() + "   "+
-                        adviceList.get(position).getSaveMsg() + "   " +
-                        adviceList.get(position).getCommentMsg() + "   " +
-                        adviceList.get(position).getAgreeMsg());
+                        adviceList.get(position).getDisagreeMsg() + "\t\t    "+
+                        adviceList.get(position).getAgreeMsg() + "\n" +
+                        adviceList.get(position).getSaveMsg() + "\t\t    " +
+                        adviceList.get(position).getCommentMsg() + "\n" +
+                        adviceList.get(position).getDateTime(getContext()));
                 adb.setPositiveButton("Ok", null);
                 adb.show();
             }

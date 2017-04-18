@@ -58,6 +58,10 @@ public class LoginActivity extends AppCompatActivity{
     //make this public so it can be passed in as an intent to the main activity
     public String nameGlobal;
 
+    public String uid;
+    public String name;
+    public String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -287,23 +291,13 @@ public class LoginActivity extends AppCompatActivity{
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }else{
-                            String uid=task.getResult().getUser().getUid();
-                            String name=task.getResult().getUser().getDisplayName();
-                            String email=task.getResult().getUser().getEmail();
+                            uid=task.getResult().getUser().getUid();
+                            name=task.getResult().getUser().getDisplayName();
+                            email=task.getResult().getUser().getEmail();
                             String image=task.getResult().getUser().getPhotoUrl().toString();
 
-                            //Create a new User and Save it in Firebase database
-                            User user = new User(name,email);
-
-                            Firebase userRef = mRef.child("users/" + uid);
-                            userRef.setValue(user, new Firebase.CompletionListener() {
-                                @Override
-                                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
-                                    if (firebaseError != null){
-                                        Log.e(TAG, "Firebase add to db failed" + firebaseError.getMessage());
-                                    }
-                                }
-                            });
+                            //check if user exists on the database, if not add them
+                            addUserFB();
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra("user_id",uid);
@@ -316,6 +310,39 @@ public class LoginActivity extends AppCompatActivity{
                         hideProgressDialog();
                     }
                 });
+    }
+
+    private void addUserFB()
+    {
+        mRef.child("users/"+uid+"/name").addListenerForSingleValueEvent(new ValueEventListener() {
+            //onDataChange is called every time the name of the User changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String tmpname = dataSnapshot.getValue(String.class);
+
+                if (tmpname != null)
+                    return;
+
+                //Create a new User and Save it in Firebase database
+                User user = new User(name,email);
+
+                Firebase userRef = mRef.child("users/" + uid);
+                userRef.setValue(user, new Firebase.CompletionListener() {
+                    @Override
+                    public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                        if (firebaseError != null){
+                            Log.e(TAG, "Firebase add to db failed" + firebaseError.getMessage());
+                        }
+                    }
+                });
+            }
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d(TAG, "Firebase error: " + firebaseError.getMessage());
+            }
+        });
+
     }
 
     public void showProgressDialog() {

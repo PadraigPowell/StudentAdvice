@@ -56,7 +56,7 @@ public class MyPosts extends ListFragment {
         myAdvice = (ListView) view.findViewById(android.R.id.list);
         noAdviceMessage = (TextView) view.findViewById(R.id.nothingToShow);
 
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle("My Posts");
+        ((MainActivity) getActivity()).getSupportActionBar().setTitle("My Advice");
         adviceList = new ArrayList<>();
 
         mRef = ((MainActivity) getActivity()).myFirebaseRef;
@@ -87,8 +87,8 @@ public class MyPosts extends ListFragment {
                     adviceList.add(post);
 
                     Map<String, String> datum = new HashMap<>(2);
-                    datum.put("title", post.getTitle() + "\n" + post.getDateTime(getContext()));
-                    datum.put("message", post.getMassagePreview(40));
+                    datum.put("title", post.getTitle());
+                    datum.put("message", post.getMassagePreview(70));
                     data.add(datum);
                 }
                 if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
@@ -133,10 +133,11 @@ public class MyPosts extends ListFragment {
                 AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
                 adb.setTitle(adviceList.get(position).getTitle());
                 adb.setMessage(adviceList.get(position).getMassage()+"\n"+
-                        adviceList.get(position).getDisagreeMsg() + "   "+
-                        adviceList.get(position).getSaveMsg() + "   " +
-                        adviceList.get(position).getCommentMsg() + "   " +
-                        adviceList.get(position).getAgreeMsg());
+                        adviceList.get(position).getDisagreeMsg() + "\t\t    "+
+                        adviceList.get(position).getAgreeMsg() + "\n" +
+                        adviceList.get(position).getSaveMsg() + "\t\t    " +
+                        adviceList.get(position).getCommentMsg() + "\n" +
+                        adviceList.get(position).getDateTime(getContext()));
                 adb.setPositiveButton("Ok", null);
                 adb.show();
             }

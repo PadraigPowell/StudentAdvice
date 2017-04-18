@@ -42,6 +42,7 @@ public class MainFragment extends Fragment {
     private FirebaseAuth mAuth;
     private ProgressDialog m_ProgressDialog;
     private long viewedAdviceCount;
+    private long totalAdviceCount;
 
     public MainFragment() {
         // Required empty public constructor
@@ -78,10 +79,8 @@ public class MainFragment extends Fragment {
         mRef = ((MainActivity) getActivity()).myFirebaseRef;
         mAuth = ((MainActivity) getActivity()).mAuth;
 
-        getViewedCount();
-
-        //get the data from the database and add it to the swipe view
-        pollFromDatabase();
+        //this gets the two start
+        getAdvice();
 
         view.findViewById(R.id.downBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,8 +103,8 @@ public class MainFragment extends Fragment {
                 t.size();
                 AdviceCard adviceCard = (AdviceCard) t.get(0);
 
-                //when the user updates the save counter they set this value to true
-                //this is used so the user can only save one value at a time
+                /*when the user updates the save counter they set this value to true
+                  this is used so the user can only save one value at a time*/
                 if (adviceCard.hasUserSaved()) {
                     Toast.makeText(getContext(), "Advice already Saved",
                             Toast.LENGTH_SHORT).show();
@@ -183,9 +182,68 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+    private void getAdvice()
+    {
+        totalAdviceCount = 0;
+        viewedAdviceCount = 0;
+
+        //Referring to the name of the User who has logged in currently and adding a valueChangeListener
+        mRef.child("adviceCount").addListenerForSingleValueEvent(new ValueEventListener() {
+            //onDataChange is called every time the name of the User changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                totalAdviceCount = dataSnapshot.getValue(Long.class);
+            }
+
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+        String uid = mAuth.getCurrentUser().getUid();
+        //Referring to the name of the User who has logged in currently and adding a valueChangeListener
+        mRef.child("users/" + uid + "/viewed").addListenerForSingleValueEvent(new ValueEventListener() {
+            //onDataChange is called every time the name of the User changes in your Firebase Database
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                viewedAdviceCount = dataSnapshot.getValue(long.class);
+
+                //get the data from the database and add it to the swipe view
+                pollFromDatabase();
+            }
+
+            //onCancelled is called in case of any error
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(getContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void pollFromDatabase()
     {
-        mRef.child("advice").addListenerForSingleValueEvent(new ValueEventListener() {
+        if(totalAdviceCount == 0) {
+            if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
+                m_ProgressDialog.dismiss();
+            }
+            return;
+        }
+
+        //subtract the total from the amount viewed to limit the amount to view to what is yet to be viewed
+        long toView = totalAdviceCount - viewedAdviceCount;
+
+        //if there's nothing to be viewed return
+        if (toView == 0) {
+            if (m_ProgressDialog != null && m_ProgressDialog.isShowing()) {
+                m_ProgressDialog.dismiss();
+            }
+            return;
+        }
+
+        mRef.child("advice").limitToLast((int) toView).addListenerForSingleValueEvent(new ValueEventListener() {
             //onDataChange is called every time the name of the User changes in your Firebase Database
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -208,25 +266,6 @@ public class MainFragment extends Fragment {
             public void onCancelled(FirebaseError firebaseError) {
                 Log.d(TAG, "Firebase error: " + firebaseError.getMessage());
                 Toast.makeText(getContext(), "Firebase error: " + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void getViewedCount()
-    {
-        String uid = mAuth.getCurrentUser().getUid();
-        //Referring to the name of the User who has logged in currently and adding a valueChangeListener
-        mRef.child("users/" + uid + "/viewed").addListenerForSingleValueEvent(new ValueEventListener() {
-            //onDataChange is called every time the name of the User changes in your Firebase Database
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                viewedAdviceCount = dataSnapshot.getValue(long.class);
-            }
-
-            //onCancelled is called in case of any error
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Toast.makeText(getContext(), "" + firebaseError.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
