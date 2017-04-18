@@ -7,6 +7,7 @@ package project.year.afinal.studentadvice;
 public class User {
     private String name;
     private String email;
+    private long viewed;
 
 
     public User() {
@@ -15,7 +16,12 @@ public class User {
     public User(String name, String email) {
         this.name = name;
         this.email = email;
+        this.viewed = 0;
     }
+
+    public void incrementViewed(){this.viewed += 1;}
+
+    public long getViewed(){return this.viewed;}
 
     public String getName() {
         return name;

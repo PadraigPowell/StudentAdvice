@@ -42,21 +42,14 @@ public class AdviceCard {
     private boolean hasSaved = false;
     private Context mContext;
     private Post mPost;
-    private SwipePlaceHolderView mSwipeView;
 
     private static final String TAG = "AdviceCard";
     private Firebase value;
-    private Firebase mRef;
-    private FirebaseAuth mAuth;
 
-    public AdviceCard(Context context, Post post, SwipePlaceHolderView swipeView, FirebaseAuth mAuth, Firebase mRef) {
+
+    public AdviceCard(Context context, Post post) {
         mContext = context;
         mPost = post;
-        mSwipeView = swipeView;
-
-        this.mAuth = mAuth;
-        this.mRef = mRef;
-
         value = new Firebase("https://student-advice.firebaseio.com/advice/" + mPost.getAdviceKey());
     }
     public Post getPost()
@@ -108,9 +101,9 @@ public class AdviceCard {
             @Override
             public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
                 if (firebaseError != null) {
-                    Log.d(TAG, "Firebase counter increment failed. Firebase error: " + firebaseError.getMessage());
+                    Log.d(TAG, "Firebase disagreeCount counter increment failed. Firebase error: " + firebaseError.getMessage());
                 } else {
-                    Log.d(TAG, "Firebase counter increment succeeded.");
+                    Log.d(TAG, "Firebase disagreeCount counter increment succeeded.");
                 }
             }
         });
@@ -138,9 +131,9 @@ public class AdviceCard {
             @Override
             public void onComplete(FirebaseError firebaseError, boolean b, DataSnapshot dataSnapshot) {
                 if (firebaseError != null) {
-                    Log.d(TAG, "Firebase counter increment failed. Firebase error: " + firebaseError.getMessage());
+                    Log.d(TAG, "Firebase agreeCount counter increment failed. Firebase error: " + firebaseError.getMessage());
                 } else {
-                    Log.d(TAG, "Firebase counter increment succeeded.");
+                    Log.d(TAG, "Firebase agreeCount counter increment succeeded.");
                 }
             }
         });

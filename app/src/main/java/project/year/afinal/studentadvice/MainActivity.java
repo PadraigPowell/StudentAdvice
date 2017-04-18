@@ -58,26 +58,12 @@ public class MainActivity extends AppCompatActivity
 
     public Firebase myFirebaseRef;
     public FirebaseAuth mAuth;
-    //public User user;
-    //private ArrayList<Post> adviceList;
-
-    //private SwipePlaceHolderView mSwipeView;
     private Context mContext;
 
     public Context getContext()
     {
         return mContext;
     }
-
-    /*public void setSwipeView(SwipePlaceHolderView mSwipeView)
-    {
-        this.mSwipeView = mSwipeView;
-    }
-
-    public SwipePlaceHolderView getSwipeView()
-    {
-        return this.mSwipeView;
-    }*/
 
 
     @Override
