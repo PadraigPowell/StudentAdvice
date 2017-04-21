@@ -63,6 +63,8 @@ public class MainFragment extends Fragment {
         }else{
             m_ProgressDialog = ProgressDialog.show(getActivity(),
                     "Please wait...", "Retrieving data ...", true);
+            m_ProgressDialog.setIndeterminate(false);
+            m_ProgressDialog.setCancelable(false);
         }
 
         mSwipeView = (SwipePlaceHolderView) view.findViewById(R.id.swipeView);

@@ -147,25 +147,16 @@ public class Saved extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "setOnItemClickListener.onItemClick " + position);
                 AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-                adb.setTitle(adviceList.get(position).getTitle());
+                adb.setTitle(adviceList.get(position).getAuthor() +": "+ adviceList.get(position).getTitle());
                 adb.setMessage(adviceList.get(position).getMassage()+"\n"+
-                        adviceList.get(position).getDisagreeMsg() + "\t\t    "+
-                        adviceList.get(position).getAgreeMsg() + "\n" +
-                        adviceList.get(position).getSaveMsg() + "\t\t    " +
-                        adviceList.get(position).getCommentMsg() + "\n" +
+                        adviceList.get(position).getDisagreeMsg() + "\t   "+
+                        adviceList.get(position).getAgreeMsg() + "\t   " +
+                        adviceList.get(position).getSaveMsg() + "\n" +
                         adviceList.get(position).getDateTime(getContext()));
                 adb.setPositiveButton("Ok", null);
                 adb.show();
             }
         });
-    }
-
-    private class setProgress {
-        setProgress(){
-            Log.d(TAG, "setProgress Constructor");
-            m_ProgressDialog = ProgressDialog.show(getActivity(),
-                    "Please wait...", "Retrieving data ...", true);
-        }
     }
 
     private boolean isNetworkAvailable() {

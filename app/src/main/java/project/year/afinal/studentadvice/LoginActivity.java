@@ -21,17 +21,12 @@ import com.firebase.client.FirebaseError;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.firebase.client.ValueEventListener;
 import com.firebase.client.DataSnapshot;
-import android.widget.TextView;
-import android.widget.ImageView;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

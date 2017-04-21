@@ -22,9 +22,13 @@ public class settings extends Fragment {
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).getSupportActionBar().setTitle("Settings");
 
+
+
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
     }
 
 }
+
 

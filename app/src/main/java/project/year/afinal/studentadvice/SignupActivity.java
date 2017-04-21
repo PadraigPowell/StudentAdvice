@@ -32,10 +32,10 @@ import android.util.Log;
 public class SignupActivity extends AppCompatActivity {
 
     private static final String TAG = "SignupActivity";
-    private EditText editTextName;
-    private EditText editTextEmail;
-    private EditText editTextPassword;
-    private EditText editRetypeTextPassword;
+    public EditText editTextName;
+    public EditText editTextEmail;
+    public EditText editTextPassword;
+    public EditText editRetypeTextPassword;
     private FirebaseAuth firebaseAuth;
     private User user;
     private ProgressDialog mProgressDialog;
@@ -135,7 +135,7 @@ public class SignupActivity extends AppCompatActivity {
         user.setEmail(editTextEmail.getText().toString());
     }
 
-    private Boolean isTextValidateForSignup() {
+    public Boolean isTextValidateForSignup() {
         String name = editTextName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
